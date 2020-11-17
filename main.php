@@ -1,10 +1,10 @@
 <?php
-require_once './Sites/Rarbg.php';
+require_once './Sites/Flashscore.php';
 
 
 $searchParam = readline('Choose a query parameter: '); ;  //String to search on websites
 
 
-$rarbg = new Rarbg();  //Create PirateBay instance
+$flashschore = new Flashscore();  //Create PirateBay instance
 
-$rarbg -> getSite($searchParam);
+$flashschore -> getSite($searchParam);
