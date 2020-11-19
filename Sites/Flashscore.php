@@ -1,25 +1,23 @@
 <?php
 
-
-
-require_once './lib/php-parser/simple_html_dom.php';
+require_once './Liga.php';
+require_once './Jogo.php';
 
     class Flashscore {
 
         const BASE_URL = 'http://www.flashscore.mobi/'; 
         const PROXY = 'dinosaur.luismeneses.pt:3128'; 
         const PROXY_AUTH = 'couves:couves';
+        public $ligas;
           // Constructor 
     public function __construct(){ 
-      
+
     } 
 
-    public static function getSite($searchParam){
-
-        $searchParam = self::replaceSpace($searchParam);
+    public static function getSite(){
         
         $url =self::BASE_URL;
-       // $url =self::BASE_URL . $searchParam;     //Concatenated 2 strings
+      //$url =self::BASE_URL . $searchParam;     //Concatenated 2 strings
         echo $url;
 
         $ch = curl_init();    //Start cURL
@@ -45,7 +43,6 @@ require_once './lib/php-parser/simple_html_dom.php';
     }
 
     public static function scrapIt($htmlRes){
-
         //vai buscar a tabela
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
@@ -57,19 +54,28 @@ require_once './lib/php-parser/simple_html_dom.php';
 
         $html = substr($htmlRes, $startPos, $lenght);
 
-        echo $html;
+        //echo $html;
+        self::loadHtml($html);
     }
 
+    public static function loadHtml($html){
+        $domDocument=new DOMDocument();
+        $domDocument->loadHTML($html);
+
+        $ligasHtml= $domDocument->getElementsByTagName('h4');
+        $ligas = array();
+
+        foreach ($ligasHtml as $liga) {
+            $ligaTemp= new Liga();
+            $ligaTemp->setLigaN($liga->nodeValue);
+            array_push($ligas,$ligaTemp);
+
+        }
+        $ligaAtual=0;
+        $jogosHtml= $domDocument->getElementsByTagName('span');
 
 
-
-
-    public static function replaceSpace($searchParam){                  //Meter na amUtil
-        $searchParam = str_replace(' ', '+',$searchParam);
-
-        return $searchParam;
 
     }
-
 
     }
