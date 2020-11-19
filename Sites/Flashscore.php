@@ -46,7 +46,6 @@ require_once './Jogo.php';
         //vai buscar a tabela
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
-        echo $startPos . 'INICIOS';
 
         $end = stripos($htmlRes,'<p class="advert-bottom"',$offset=$startPos);
 
@@ -74,7 +73,30 @@ require_once './Jogo.php';
         $ligaAtual=0;
         $jogosHtml= $domDocument->getElementsByTagName('span');
 
+        self::scrapGames($html,count($ligas));
 
+    }
+
+    public static function scrapGames($html,$a){
+        echo $a;
+        $texts=array();
+        $startSearching =0;
+        for ($i=0;$i<$a;$i++){
+            $startPos =stripos($html, '<h4>',$startSearching);
+
+        if($i == $a-1){
+            $end = stripos($html,'</div>');
+        }else{
+            $end = stripos($html,'<h4>',$offset=$startPos+1);
+        }
+
+            $length = $end-$startPos;
+            array_push($texts,substr($html, $startPos, $length));
+
+            $startSearching=$end;
+
+        }
+        var_dump($texts);
 
     }
 
