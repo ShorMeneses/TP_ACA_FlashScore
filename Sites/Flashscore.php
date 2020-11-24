@@ -1,15 +1,17 @@
 <?php
 
-require_once './Liga.php';
-require_once './Jogo.php';
+require_once './League.php';
+require_once './Game.php';
 
     class Flashscore {
 
         const BASE_URL = 'http://www.flashscore.mobi/'; 
         const PROXY = 'dinosaur.luismeneses.pt:3128'; 
         const PROXY_AUTH = 'couves:couves';
-        public $ligas;
-          // Constructor 
+        public $leagues;
+
+
+        // Constructor
     public function __construct(){ 
 
     } 
@@ -22,7 +24,6 @@ require_once './Jogo.php';
 
         $ch = curl_init();    //Start cURL
 
-        
 
         curl_setopt($ch,CURLOPT_HTTPGET,true);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,true);
@@ -49,9 +50,9 @@ require_once './Jogo.php';
 
         $end = stripos($htmlRes,'<p class="advert-bottom"',$offset=$startPos);
 
-        $lenght = $end-$startPos;
+        $length = $end-$startPos;
 
-        $html = substr($htmlRes, $startPos, $lenght);
+        $html = substr($htmlRes, $startPos, $length);
 
         //echo $html;
         self::loadHtml($html);
@@ -61,30 +62,30 @@ require_once './Jogo.php';
         $domDocument=new DOMDocument();
         $domDocument->loadHTML($html);
 
-        $ligasHtml= $domDocument->getElementsByTagName('h4');
-        $ligas = array();
+        $leaguesHtml= $domDocument->getElementsByTagName('h4');
+        $leagues = array();
 
-        foreach ($ligasHtml as $liga) {
-            $ligaTemp= new Liga();
-            $ligaTemp->setLigaN($liga->nodeValue);
-            array_push($ligas,$ligaTemp);
+        foreach ($leaguesHtml as $league) {
+            $tempLeagues= new League();
+            $tempLeagues->setLeagueName($league->nodeValue);
+            array_push($leagues,$tempLeagues);
 
         }
-        $ligaAtual=0;
-        $jogosHtml= $domDocument->getElementsByTagName('span');
+        $actualLeague=0;
+        $htmlGames= $domDocument->getElementsByTagName('span');
 
-        self::scrapGames($html,count($ligas));
+        self::scrapGames($html,count($leagues));
 
     }
 
-    public static function scrapGames($html,$a){
-        echo $a;
+    public static function scrapGames($html,$numberOfLeagues){
+        echo $numberOfLeagues;
         $texts=array();
         $startSearching =0;
-        for ($i=0;$i<$a;$i++){
+        for ($i=0;$i<$numberOfLeagues;$i++){
             $startPos =stripos($html, '<h4>',$startSearching);
 
-        if($i == $a-1){
+        if($i == $numberOfLeagues-1){
             $end = stripos($html,'</div>');
         }else{
             $end = stripos($html,'<h4>',$offset=$startPos+1);
