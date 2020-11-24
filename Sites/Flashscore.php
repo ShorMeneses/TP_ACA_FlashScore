@@ -7,6 +7,7 @@ require_once './Game.php';
 
     class Flashscore {
         private $leagues;
+        private $teste;
 
         const BASE_URL = 'http://www.flashscore.mobi/'; 
         const PROXY = 'dinosaur.luismeneses.pt:3128'; 
@@ -116,15 +117,17 @@ require_once './Game.php';
             $gamesUrls=array();
             $gamesTime=array();
             $gamesScores=array();
+            $gamesStatus="";
+
+
 
             preg_match_all('/(?<=<\/span>)[^<]+/',$leaguesFromHTML[$i],$gamesNames,PREG_PATTERN_ORDER);  //Game Names
 
             preg_match_all('/"[^>]+" /',$leaguesFromHTML[$i],$gamesUrls,PREG_PATTERN_ORDER);  //URL's games
 
-            preg_match_all('/>[^>]+<\/s/',$leaguesFromHTML[$i],$gamesTime,PREG_PATTERN_ORDER);  //URL's games
+            preg_match_all('/>[^>]+<\/s/',$leaguesFromHTML[$i],$gamesTime,PREG_PATTERN_ORDER);  //Times games
 
-            preg_match_all('/[^>]+<\/a/',$leaguesFromHTML[$i],$gamesScores,PREG_PATTERN_ORDER);  //URL's games
-
+            preg_match_all('/[^>]+<\/a/',$leaguesFromHTML[$i],$gamesScores,PREG_PATTERN_ORDER);  //Scores games
 
 
 
@@ -140,20 +143,38 @@ require_once './Game.php';
                     $gamesTime[0][$j] = str_replace(">","", $gamesTime[0][$j]);
 
                 }
-
-                $words = explode("-",$gamesNames[0][$j]);
-
                 $gamesScores[0][$j] = str_replace("</a","", $gamesScores[0][$j]);   //clean score of game
 
 
+                if($gamesTime[0][$j]=="Half Time"){
+                    $gamesStatus="Half Time";
+                }elseif (strpos($gamesScores[0][$j],"-:-")!==false){
+                    $gamesStatus="Scheduled";
+                }elseif (strlen($gamesTime[0][$j]) <4 ) {
+                    $gamesStatus = "Live";
+                }elseif (strpos($gamesTime[0][$j],":") ){
+                    $gamesStatus = "Finished";
+                }
 
-                $tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$gamesScores[0][$j]);
+                $words = explode("-",$gamesNames[0][$j]);
+
+
+
+
+
+
+                $tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$gamesScores[0][$j],$gamesStatus);
                 $this->leagues[$i]->pushJogos($tempGame);
+
+
             }
+
 
         }
 
         var_dump($this->leagues);
+
+
     }
 
 

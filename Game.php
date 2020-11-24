@@ -19,23 +19,15 @@ class Game
      * @param $result
      * @param $game_link
      */
-   /* public function __construct($game_time, $home_team, $away_team, $game_status, $result, $game_link)
-    {
-        $this->game_time = $game_time;
-        $this->home_team = $home_team;
-        $this->away_team = $away_team;
-        $this->game_status = $game_status;
-        $this->result = $result;
-        $this->game_link = $game_link;
-    }*/
 
-    public function __construct($game_time, $home_team, $away_team, $game_link, $result)
+    public function __construct($game_time, $home_team, $away_team, $game_link, $result,$game_status)
     {
         $this->game_time = $game_time;
         $this->home_team = $home_team;
         $this->away_team = $away_team;
         $this->game_link = $game_link;
         $this->result = $result;
+        $this->game_status= $game_status;
     }
 
     /**
