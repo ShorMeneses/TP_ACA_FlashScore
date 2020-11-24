@@ -3,20 +3,23 @@
 require_once './League.php';
 require_once './Game.php';
 
+
+
     class Flashscore {
+        private $leagues;
 
         const BASE_URL = 'http://www.flashscore.mobi/'; 
         const PROXY = 'dinosaur.luismeneses.pt:3128'; 
         const PROXY_AUTH = 'couves:couves';
-        public $leagues;
+
 
 
         // Constructor
-    public function __construct(){ 
+    public function __construct(){
 
-    } 
+    }
 
-    public static function getSite(){
+    public function getSite(){
         
         $url =self::BASE_URL;
       //$url =self::BASE_URL . $searchParam;     //Concatenated 2 strings
@@ -43,7 +46,7 @@ require_once './Game.php';
 
     }
 
-    public static function scrapIt($htmlRes){
+    public  function scrapIt($htmlRes){
         //vai buscar a tabela
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
@@ -58,27 +61,29 @@ require_once './Game.php';
         self::loadHtml($html);
     }
 
-    public static function loadHtml($html){
+    public function loadHtml($html){
+        $this->leagues = array();
         $domDocument=new DOMDocument();
         $domDocument->loadHTML($html);
 
         $leaguesHtml= $domDocument->getElementsByTagName('h4');
-        $leagues = array();
+      // $leagues = array();
+
 
         foreach ($leaguesHtml as $league) {
             $tempLeagues= new League();
             $tempLeagues->setLeagueName($league->nodeValue);
-            array_push($leagues,$tempLeagues);
+            array_push($this->leagues,$tempLeagues);
 
         }
         $actualLeague=0;
         $htmlGames= $domDocument->getElementsByTagName('span');
 
-        self::scrapGames($html,count($leagues));
+        self::scrapGames($html,count($this->leagues));
 
     }
 
-    public static function scrapGames($html,$numberOfLeagues){
+    public  function scrapGames($html,$numberOfLeagues){
         echo $numberOfLeagues;
         $texts=array();
         $startSearching =0;
@@ -97,8 +102,73 @@ require_once './Game.php';
             $startSearching=$end;
 
         }
-        var_dump($texts);
+
+        self::getInfoFromGamesHTML($texts);
+       // var_dump($texts);
 
     }
 
+    public  function getInfoFromGamesHTML($leaguesFromHTML){
+
+
+        for ($i=0;$i<count($leaguesFromHTML);$i++){
+            $gamesNames=array();
+            $gamesUrls=array();
+            $gamesTime=array();
+            $gamesScores=array();
+
+            preg_match_all('/(?<=<\/span>)[^<]+/',$leaguesFromHTML[$i],$gamesNames,PREG_PATTERN_ORDER);  //Game Names
+
+            preg_match_all('/"[^>]+" /',$leaguesFromHTML[$i],$gamesUrls,PREG_PATTERN_ORDER);  //URL's games
+
+            preg_match_all('/>[^>]+<\/s/',$leaguesFromHTML[$i],$gamesTime,PREG_PATTERN_ORDER);  //URL's games
+
+            preg_match_all('/[^>]+<\/a/',$leaguesFromHTML[$i],$gamesScores,PREG_PATTERN_ORDER);  //URL's games
+
+
+
+
+           // var_dump($gamesTime);
+            echo json_encode(count($gamesTime[0]));
+
+            for ($j=0;$j<count($gamesNames[0]);$j++) {
+
+
+             $pos=   strpos($gamesTime[0][$j],"</s");                                       //clean match time
+                if($pos>1){
+                    $gamesTime[0][$j] = str_replace("</s","", $gamesTime[0][$j]);
+                    $gamesTime[0][$j] = str_replace(">","", $gamesTime[0][$j]);
+
+                }
+
+                $words = explode("-",$gamesNames[0][$j]);
+
+                $gamesScores[0][$j] = str_replace("</a","", $gamesScores[0][$j]);   //clean score of game
+
+
+
+                $tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$gamesScores[0][$j]);
+                $this->leagues[$i]->pushJogos($tempGame);
+            }
+
+        }
+
+        var_dump($this->leagues);
+    }
+
+
+
+
+
+//   href[^>]+>
+//   href="/match/Y3iEqXZB/" class="fin"
+
+//   "[^>]+"    (com o espaço a frente do ")   fixed
+//   "/match/Y3iEqXZB/"
+
+//  >[^>]+<\/s
+//  <span>11:00</span>
+
+//  (?<=<\/span>)[^<]+    fiex
+//  Genclerbirligi - Kirsehir Belediyespor    --full match  do regex
     }

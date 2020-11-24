@@ -3,7 +3,7 @@
 class League
 {
    public $name;
-   public $games;
+   public $games=array();
 
     public function __construct(){
         $games= array();
@@ -18,6 +18,6 @@ class League
     }
 
     public function pushJogos($newItem){
-        array_push($games,$newItem);
+        array_push($this->games,$newItem);
     }
 }
