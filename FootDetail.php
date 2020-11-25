@@ -21,13 +21,34 @@ class FootDetail{
     }
 
     public function helpConstrutor($tipo){
-        return $tipo;
+        /*cards
+   y-card - cartao amarelo
+   yr-card- um amarelo um vermelho
+   r-card -cartao vermlho direto
+   ball -golo
+   substitution-substituição
+
+   */
+        $res="Error";
+        if(strpos($tipo,"y-card")){
+            $res="Yellow Card";
+        }elseif (strpos($tipo,"yr-card")){
+            $res="Red Card (Second Yellow)";
+        }elseif (strpos($tipo,"r-card")){
+            $res="Red Card";
+        }elseif (strpos($tipo,"ball")){
+            $res="Goal";
+        }elseif (strpos($tipo,"substitution")){
+            $res="Substitution";
+        }
+
+        return $res;
     }
-/*
-    public function __toString()
-    {
+
+    public function __toString(){
+        return $this->tempo . " ". $this->descricao . $this->tipo ;
     }
-*/
+
 
     /**
      * @return mixed

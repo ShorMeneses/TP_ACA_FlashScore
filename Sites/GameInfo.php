@@ -11,6 +11,17 @@ class GameInfo
     const PROXY_AUTH = 'couves:couves';
 
 
+    public function getLeaguesLinks($leagues){
+        for ($i=0;$i<count($leagues);$i++){
+
+            for ($j=0;$j<count($leagues[$i]->games);$j++){
+                //TODO isto ta a passear pelos jogos associar os footdetails a cada jogo
+                
+            }
+        }
+
+}
+
 
 
     public function init(){
@@ -50,11 +61,12 @@ class GameInfo
 
         $goals1H=self::getGoalsFirstHalf($gameParts);
         $goals2H=self::getGoalsSecondHalf($gameParts);
-        self::getFirstHalfDetails($gameParts);
+        $details1H=self::getFirstHalfDetails($gameParts);
+        $details2H=self::getSecondHalfDetails($gameParts);
 
-     //   var_dump($goals1H);
-     //   var_dump($goals2H);
+
     }
+
 
     private static function getGoalsFirstHalf($gameParts){
         try {
@@ -86,23 +98,16 @@ class GameInfo
 
     }
 
-    /*cards
-    y-card - cartao amarelo
-    yr-card- um amarelo um vermelho
-    r-card -cartao vermlho direto
-    ball -golo
-    substitution-substituição
 
-    */
     private static function getFirstHalfDetails($gameParts){
-
+        $resArray=array();
         $boolean=true;
-      // $actualDiv= new DOMElement();
+
        $actualDiv=$gameParts->firstChild->nextSibling->firstChild; // equivalente a div incident soccer
 
         try {
            if($actualDiv->tagName=="div"){
-              // echo $actualDiv->firstChild->nextSibling->tagName;
+
 
                    while ($boolean) {
                        echo $actualDiv->firstChild->nextSibling->getAttribute("class");
@@ -110,6 +115,9 @@ class GameInfo
                        $footDetail= new FootDetail($actualDiv->firstChild->textContent,
                            $actualDiv->firstChild->nextSibling->nextSibling->textContent,
                            $actualDiv->firstChild->nextSibling->getAttribute("class"));//tempo descricao tipo
+
+                       array_push($resArray,$footDetail);
+
 
                        if ($actualDiv->nextSibling->tagName == "hr") {
                            $boolean = false;
@@ -120,19 +128,41 @@ class GameInfo
            }
         }catch(Exception $e){
         }
+        return $resArray;
     }
 
-/*
+
     private static function getSecondHalfDetails($gameParts){
+        $resArray=array();
+        $boolean=true;
+
+        $actualDiv=$gameParts->firstChild->nextSibling->nextSibling->nextSibling->firstChild; // equivalente a div incident soccer
 
         try {
-            if(){
+            if($actualDiv->tagName=="div"){
 
+
+                while ($boolean) {
+                    echo $actualDiv->firstChild->nextSibling->getAttribute("class");
+
+                    $footDetail= new FootDetail($actualDiv->firstChild->textContent,
+                        $actualDiv->firstChild->nextSibling->nextSibling->textContent,
+                        $actualDiv->firstChild->nextSibling->getAttribute("class"));//tempo descricao tipo
+
+                    array_push($resArray,$footDetail);
+
+
+                    if ($actualDiv->nextSibling->tagName == "hr") {
+                        $boolean = false;
+                    } else {
+                        $actualDiv = $actualDiv->nextSibling;
+                    }
+                }
             }
-
         }catch(Exception $e){
         }
+        return $resArray;
+    }
 
-    }*/
 
 }

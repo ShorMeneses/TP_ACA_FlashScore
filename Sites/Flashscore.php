@@ -81,7 +81,7 @@ require_once 'GameInfo.php';
         $htmlGames= $domDocument->getElementsByTagName('span');
 
         self::scrapGames($html,count($this->leagues));
-
+//var_dump($html);
     }
 
     public  function scrapGames($html,$numberOfLeagues){
@@ -121,7 +121,7 @@ require_once 'GameInfo.php';
 
             preg_match_all('/(?<=<\/span>)[^<]+/',$leaguesFromHTML[$i],$gamesNames,PREG_PATTERN_ORDER);  //Game Names
 
-            preg_match_all('/"[^>]+" /',$leaguesFromHTML[$i],$gamesUrls,PREG_PATTERN_ORDER);  //URL's games
+            preg_match_all('/href="[^>]+" /',$leaguesFromHTML[$i],$gamesUrls,PREG_PATTERN_ORDER);  //URL's games
 
             preg_match_all('/>[^>]+<\/s/',$leaguesFromHTML[$i],$gamesTime,PREG_PATTERN_ORDER);  //Times games
 
@@ -138,6 +138,10 @@ require_once 'GameInfo.php';
                     $gamesTime[0][$j] = str_replace("</s","", $gamesTime[0][$j]);
                     $gamesTime[0][$j] = str_replace(">","", $gamesTime[0][$j]);
                 }
+
+                $gamesUrls[0][$j] = str_replace('href="',"", $gamesUrls[0][$j]);
+                $gamesUrls[0][$j] = str_replace('"',"", $gamesUrls[0][$j]);
+
 
                 $gamesScores[0][$j] = str_replace("</a","", $gamesScores[0][$j]);   //clean score of game
 
@@ -164,24 +168,14 @@ require_once 'GameInfo.php';
             }
         }
 
-        $gameInfo = new GameInfo();  //Create PirateBay instance
+        $gameInfo = new GameInfo();
 
-        $gameInfo -> init();
+        $gameInfo -> getLeaguesLinks($this->leagues);
 
 
-       // var_dump($this->leagues);
+
 
     }
 
-//   href[^>]+>
-//   href="/match/Y3iEqXZB/" class="fin"
 
-//   "[^>]+"    (com o espaço a frente do ")   fixed
-//   "/match/Y3iEqXZB/"
-
-//  >[^>]+<\/s
-//  <span>11:00</span>
-
-//  (?<=<\/span>)[^<]+    fiex
-//  Genclerbirligi - Kirsehir Belediyespor    --full match  do regex
     }

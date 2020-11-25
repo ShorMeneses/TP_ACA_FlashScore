@@ -10,6 +10,7 @@ class Game
     public $hGoals;
     public $aGoals;
     public $game_link;
+    public $game_info;
 
     /**
      * Game constructor.
@@ -48,6 +49,22 @@ class Game
     {
         $this->hGoals = $hGoals;
         $this->aGoals = $aGoals;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGameInfo()
+    {
+        return $this->game_info;
+    }
+
+    /**
+     * @param mixed $game_info
+     */
+    public function setGameInfo($game_info)
+    {
+        $this->game_info = $game_info;
     }
 
     /**
