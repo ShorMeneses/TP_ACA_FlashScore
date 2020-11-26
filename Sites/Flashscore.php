@@ -122,7 +122,7 @@ require_once 'AmUtil.php';
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
 
         //Respota dos jogos todos
-        var_dump($allInfo);
+       echo json_encode($allInfo);
 
 
     }
