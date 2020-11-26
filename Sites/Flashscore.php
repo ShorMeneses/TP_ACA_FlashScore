@@ -161,7 +161,7 @@ require_once 'GameInfo.php';
                 $goals = explode(":",$gamesScores[0][$j]);
 
 
-                $tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$goals[0],$goals[1],$gamesStatus);
+                @$tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$goals[0],$goals[1],$gamesStatus);
 
                 $this->leagues[$i]->pushJogos($tempGame);
 
