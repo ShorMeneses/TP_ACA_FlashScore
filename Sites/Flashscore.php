@@ -3,16 +3,12 @@
 require_once './League.php';
 require_once './Game.php';
 require_once 'GameInfo.php';
+require_once 'AmUtil.php';
 
 
 
     class Flashscore {
         private $leagues;
-
-        const BASE_URL = 'http://www.flashscore.mobi/'; 
-        const PROXY = 'dinosaur.luismeneses.pt:3128';
-        const PROXY_AUTH = 'couves:couves';
-
 
 
         // Constructor
@@ -21,34 +17,15 @@ require_once 'GameInfo.php';
     }
 
     public function getSite(){
-        
-        $url =self::BASE_URL;
-      //$url =self::BASE_URL . $searchParam;     //Concatenated 2 strings
-       // echo $url;
 
-        $ch = curl_init();    //Start cURL
-
-
-        curl_setopt($ch,CURLOPT_HTTPGET,true);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,true);
-        curl_setopt($ch,CURLOPT_USERAGENT,'BotToGetGames');  //Meter como const no amUtil dps
-        curl_setopt($ch, CURLOPT_URL,$url);
-       // curl_setopt($ch, CURLOPT_PROXY, self::PROXY);
-       // curl_setopt($ch, CURLOPT_PROXYUSERPWD, self::PROXY_AUTH);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        
-        $htmlRes = curl_exec($ch);
+        // TODO on href add various types of game
+        $htmlRes = AmUtil::askCurl('/',false);
 
         self::scrapIt($htmlRes);
-        
-       // var_dump($htmlRes);
 
     }
 
     public  function scrapIt($htmlRes){
-        //vai buscar a tabela
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
 
@@ -58,34 +35,28 @@ require_once 'GameInfo.php';
 
         $html = substr($htmlRes, $startPos, $length);
 
-        //echo $html;
         self::loadHtml($html);
     }
 
     public function loadHtml($html){
         $this->leagues = array();
         $domDocument=new DOMDocument();
-        $domDocument->loadHTML($html);
+        @$domDocument->loadHTML($html);
 
         $leaguesHtml= $domDocument->getElementsByTagName('h4');
-      // $leagues = array();
 
 
         foreach ($leaguesHtml as $league) {
             $tempLeagues= new League();
             $tempLeagues->setLeagueName($league->nodeValue);
             array_push($this->leagues,$tempLeagues);
-
         }
-        $actualLeague=0;
-        $htmlGames= $domDocument->getElementsByTagName('span');
 
         self::scrapGames($html,count($this->leagues));
-//var_dump($html);
+
     }
 
     public  function scrapGames($html,$numberOfLeagues){
-       // echo $numberOfLeagues;
         $texts=array();
         $startSearching =0;
         for ($i=0;$i<$numberOfLeagues;$i++){
@@ -105,11 +76,10 @@ require_once 'GameInfo.php';
         }
 
         self::getInfoFromGamesHTML($texts);
-       // var_dump($texts);
 
     }
 
-    public  function getInfoFromGamesHTML($leaguesFromHTML){
+    public function getInfoFromGamesHTML($leaguesFromHTML){
 
 
         for ($i=0;$i<count($leaguesFromHTML);$i++){
@@ -127,41 +97,20 @@ require_once 'GameInfo.php';
 
             preg_match_all('/[^>]+<\/a/',$leaguesFromHTML[$i],$gamesScores,PREG_PATTERN_ORDER);  //Scores games
 
-           // var_dump($gamesTime);
-            //echo json_encode(count($gamesTime[0]));
 
             for ($j=0;$j<count($gamesNames[0]);$j++) {
 
 
-             $pos=   strpos($gamesTime[0][$j],"</s");                                       //clean match time
-                if($pos>1){
-                    $gamesTime[0][$j] = str_replace("</s","", $gamesTime[0][$j]);
-                    $gamesTime[0][$j] = str_replace(">","", $gamesTime[0][$j]);
-                }
-
-                $gamesUrls[0][$j] = str_replace('href="',"", $gamesUrls[0][$j]);
-                $gamesUrls[0][$j] = str_replace('"',"", $gamesUrls[0][$j]);
-
-
-                $gamesScores[0][$j] = str_replace("</a","", $gamesScores[0][$j]);   //clean score of game
-
-                if($gamesTime[0][$j]=="Half Time"){
-                    $gamesStatus="Half Time";
-                }elseif($gamesTime[0][$j]=="Postponed"){
-                    $gamesStatus="Postponed";
-                }elseif (strpos($gamesScores[0][$j],"-:-")!==false){
-                    $gamesStatus="Scheduled";
-                }elseif (strlen($gamesTime[0][$j]) <4 ) {
-                    $gamesStatus = "Live";
-                }elseif(strpos($gamesTime[0][$j],":") ){
-                     $gamesStatus = "Finished";
-                }
+                $matchTime = self::cleanMatchTime($gamesTime[0][$j]);
+                $matchUrl = self::cleanMatchUrl($gamesUrls[0][$j]);
+                $matchScore = self::cleanMatchScore($gamesScores[0][$j]);
+                $gamesStatus =self::cleanMatchStatus($matchTime,$matchScore);
 
                 $words = explode("-",$gamesNames[0][$j]);
-                $goals = explode(":",$gamesScores[0][$j]);
+                $goals = explode(":",$matchScore);
 
 
-                @$tempGame = new Game($gamesTime[0][$j], $words[0],$words[1], $gamesUrls[0][$j],$goals[0],$goals[1],$gamesStatus);
+                @$tempGame = new Game($matchTime, $words[0],$words[1], $matchUrl,$goals[0],$goals[1],$gamesStatus);
 
                 $this->leagues[$i]->pushJogos($tempGame);
 
@@ -170,12 +119,58 @@ require_once 'GameInfo.php';
 
         $gameInfo = new GameInfo();
 
-        $gameInfo ->getLeaguesLinks($this->leagues);
+        $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
 
-      //   $gameInfo -> init();
+        //Respota dos jogos todos
+        var_dump($allInfo);
 
 
     }
+
+        public function cleanMatchTime($matchTime){
+            $pos=   strpos($matchTime,"</s");
+            if($pos>1){
+                $matchTime = str_replace("</s","", $matchTime);
+                $matchTime = str_replace(">","", $matchTime);
+            }
+            return $matchTime;
+        }
+
+        public function cleanMatchUrl($matchUrl){
+            $matchUrl = str_replace('href="',"", $matchUrl);
+            $matchUrl = str_replace('"',"", $matchUrl);
+
+            return $matchUrl;
+        }
+
+        public function cleanMatchScore($matchScore){
+            $matchScore = str_replace("</a","", $matchScore);
+
+            return $matchScore;
+        }
+
+        public function cleanMatchStatus($matchTime,$matchScore){
+            $gamesStatus ='Error';
+
+            if($matchTime=="Half Time"){
+                $gamesStatus="Half Time";
+
+                }elseif($matchTime=="Postponed"){
+                    $gamesStatus="Postponed";
+
+                    }elseif (strpos($matchScore,"-:-")!==false){
+                        $gamesStatus="Scheduled";
+
+                        }elseif (strlen($matchTime) <4 ) {
+                            $gamesStatus = "Live";
+
+                            }elseif(strpos($matchTime,":") ){
+                                $gamesStatus = "Finished";
+                            }
+
+
+            return $gamesStatus;
+        }
 
 
     }

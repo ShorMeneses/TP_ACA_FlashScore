@@ -21,14 +21,7 @@ class FootDetail{
     }
 
     public function helpConstrutor($tipo){
-        /*cards
-   y-card - cartao amarelo
-   yr-card- um amarelo um vermelho
-   r-card -cartao vermlho direto
-   ball -golo
-   substitution-substituição
 
-   */
         $res="Error";
         if(strpos($tipo,"y-card")){
             $res="Yellow Card";
