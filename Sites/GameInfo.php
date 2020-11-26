@@ -30,7 +30,7 @@ class GameInfo
 
 
     public function init(){
-        $href="http://www.flashscore.mobi/match/AZchMNjM/";
+        $href="http://www.flashscore.mobi/match/WdxtNRJ4/";
         self::getInfo($href);
     }
 
@@ -65,206 +65,89 @@ class GameInfo
             $domDocument = new DOMDocument();
             @$domDocument->loadHTML($htmlGameInfo);
 
-            $gameParts = $domDocument;//->getElementById("detail-tab-content");
-
+            $gameParts = $domDocument;
             $goals1H = self::getGoalsFirstHalf($gameParts);
-          //  $goals2H = self::getGoalsSecondHalf($gameParts);
-          //  $details1H = self::getFirstHalfDetails($gameParts);
-         //   $details2H = self::getSecondHalfDetails($gameParts);
+
         }catch (Exception $e){
 
         }
-        //array_push($res,$goals1H);
-      //  array_push($res,$goals2H);
-      //  array_push($res,$details1H);
-//        array_push($res,$details2H);
+
 
         return $res;
 
     }
 
 
-    private static function getGoalsFirstHalf($gameParts){
+    private static function getGoalsFirstHalf($gameParts)
+    {
 
         $as = $gameParts->getElementById("detail-tab-content");
-       // echo $as->textContent;
+
+    if ($as){
         $as2 = $as->childNodes;
-        $asDivs=[];
-       // var_dump($as2);
+
+
         foreach ($as2 as $someAElement) {
-            if ($someAElement->getAttribute('class')=='detail' ){
-                if ($someAElement->previousSibling->tagName == 'h4' && strpos($someAElement->previousSibling->textContent,'1st') ==02   ){
-                    echo '1parte';
-                    echo strpos($someAElement->previousSibling->textContent,'1st');
-                 //   $asDivs[0]=$someAElement->textContent;
-                }
-              /*  if ($someAElement->previousSibling->tagName == 'h4' && strpos($someAElement->previousSibling->textContent,'2nd') >=0  ){
-                    echo '2parte';
-                   // $asDivs[1]=$someAElement->textContent;
-                }*/
-            }
-        }
 
-//var_dump($asDivs);
+            if ($someAElement->tagName == 'h4' && self::contains($someAElement->textContent, '1st') == 'true') {
+                echo "\nFirst h4 " . $someAElement->textContent;
 
-       /* $as = $gameParts->getElementsByTagName('div');
-        $asDivs=[];
-var_dump($as);
-        foreach ($as as $someAElement) {
-            if ($someAElement->getAttribute('class')=='detail'  && $someAElement->parentNode->getAttribute('id') == 'detail-tab-content'){
-$h4 = $someAElement->previousSibling;
-                if ($someAElement->previousSibling->tagName == 'h4' && strpos($someAElement->previousSibling->textContent,'1st') >=0  && strpos($someAElement->previousSibling->textContent,'2nd')==null ){
-                    $go=true;
-                    do{
-                        //echo 'got to 1st part';
-                      //  echo $someAElement->previousSibling->textContent;
-                        $asDivs[0]=$someAElement->textContent;
-                        if ($someAElement->previousSibling->tagName != 'hr'  ){
-                            $go=false;
+                if ($someAElement->nextSibling) {
+                    if (count($someAElement->nextSibling->childNodes) > 1) {
+                        if ($someAElement->nextSibling->tagName != 'h4') {
+                            if ($someAElement->nextSibling->childNodes[0]->tagName != 'h4') {
+                                foreach ($someAElement->nextSibling->childNodes as $incidents) {
+                                  if ($incidents) {
+                                       if ($incidents->tagName != 'hr') {
+                                            echo "\n Incident first half " . $incidents->textContent;
+                                    }
+                                }
+                            }
                         }
                     }
-                    while ($go);
-
-
-
-
-                }
-                if ($someAElement->previousSibling->tagName == 'h4' && strpos($someAElement->previousSibling->textContent,'2nd') >=0){
-                    //2 parte
-                    echo 'got to 2st part';
-                    $asDivs[1]=$someAElement->textContent;
-                }
-
-                //array_push($asDivs,$someAElement->textContent);
-            }
-        }
-        var_dump($asDivs);
-*/
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*  private static function getGoalsFirstHalf($gameParts){
-        try {
-            if(@$gameParts->firstChild->tagName=="h4"){
-                if($gameParts->firstChild->firstChild->nextSibling->tagName=="b"){
-                    $goals1H= $gameParts->firstChild->firstChild->nextSibling->nodeValue;
-                    $goals1H = explode(":",$goals1H);
-                        return $goals1H;
-                }
-            }
-
-        }catch(Exception $e){
-        }
-
-    } */
-
-    /* private static function getGoalsSecondHalf($gameParts){
-        try {
-            if(@$gameParts->firstChild->nextSibling->nextSibling->tagName!="h4"){
-                @$gameParts=$gameParts->firstChild->nextSibling;
-            }
-
-            if(@$gameParts->firstChild->nextSibling->nextSibling->tagName=="h4"){
-                if($gameParts->firstChild->nextSibling->nextSibling->firstChild->nextSibling->tagName=="b"){
-                    $goals2H= $gameParts->firstChild->nextSibling->nextSibling->firstChild->nextSibling->nodeValue;
-                    $goals2H = explode(":",$goals2H);
-                    return $goals2H;
-                }
-            }
-
-        }catch(Exception $e){
-        }
-
-    }*/
-
-
-   /* private static function getFirstHalfDetails($gameParts){
-        $resArray=array();
-        $boolean=true;
-
-       @$actualDiv=$gameParts->firstChild->nextSibling->firstChild; // equivalente a div incident soccer
-
-        try {
-           if(@$actualDiv->tagName=="div"){
-
-
-                   while ($boolean) {
-
-                       $footDetail= new FootDetail($actualDiv->firstChild->textContent,
-                           $actualDiv->firstChild->nextSibling->nextSibling->textContent,
-                           $actualDiv->firstChild->nextSibling->getAttribute("class"));//tempo descricao tipo
-
-                       array_push($resArray,$footDetail);
-
-
-                       if ($actualDiv->nextSibling->tagName == "hr") {
-                           $boolean = false;
-                       } else {
-                           $actualDiv = $actualDiv->nextSibling;
-                       }
-                   }
-           }
-        }catch(Exception $e){
-        }
-        return $resArray;
-    }
-*/
-
-   /* private static function getSecondHalfDetails($gameParts){
-        $resArray=array();
-        $boolean=true;
-
-        @$actualDiv=$gameParts->firstChild->nextSibling->nextSibling->nextSibling->firstChild; // equivalente a div incident soccer
-        if(@$actualDiv->tagName!="div"){
-            @$actualDiv=$gameParts->firstChild->nextSibling->nextSibling->fistChild;
-           // TODO caso n aconteça nada na 1 parte
-            
-        }
-        try {
-            if(@$actualDiv->tagName=="div"){
-
-
-                while ($boolean) {
-                    echo $actualDiv->firstChild->nextSibling->getAttribute("class");
-
-                    $footDetail= new FootDetail($actualDiv->firstChild->textContent,
-                        $actualDiv->firstChild->nextSibling->nextSibling->textContent,
-                        $actualDiv->firstChild->nextSibling->getAttribute("class"));//tempo descricao tipo
-
-                    array_push($resArray,$footDetail);
-
-
-                    if ($actualDiv->nextSibling->tagName == "hr") {
-                        $boolean = false;
-                    } else {
-                        $actualDiv = $actualDiv->nextSibling;
                     }
                 }
             }
-        }catch(Exception $e){
+
+            if ($someAElement->tagName == 'h4' && self::contains($someAElement->textContent, '2nd') == 'true') {
+                echo "\n\nSecond h4 " . $someAElement->textContent;
+
+                if($someAElement->nextSibling) {
+                    if (count($someAElement->nextSibling->childNodes) > 1) {
+                        if ($someAElement->nextSibling->tagName != 'h4') {
+                            if ($someAElement->nextSibling->childNodes[0]->tagName != 'h4') {
+                                foreach ($someAElement->nextSibling->childNodes as $incidents) {
+                                    if ($incidents) {
+                                        if ($incidents->tagName != 'hr') {
+                                            echo "\n Incident second half " . $incidents->textContent;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
         }
-        return $resArray;
-    }*/
+
+    }
+    }
+
+
+
+
+
+
+    private static function contains($string,$needle){
+        if(preg_match("/{$needle}/i", $string)) {
+            return 'true';
+        }else{
+            return 'false';
+        }
+    }
+
 
 
 }
