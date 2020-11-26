@@ -172,7 +172,7 @@ require_once 'GameInfo.php';
 
         $gameInfo -> getLeaguesLinks($this->leagues);
 
-
+      //   $gameInfo -> init();
 
 
     }
