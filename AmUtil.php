@@ -31,5 +31,13 @@ class AmUtil{
         return $htmlRes;
     }
 
+//while(1){
+
+//metodo a chamar
+//sleep(60);//1 minute pause
+//}
+
+
+
 
 }//AmUtil
