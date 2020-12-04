@@ -7,14 +7,25 @@ require_once './Game.php';
 class GameInfo
 {
 
+    public function contains($haystack,$needle){
+        if(preg_match("/{$needle}/i", $haystack)) {
+            return 'true';
+        }else{
+            return 'false';
+        }
+    }
+
+
     public function getLeaguesLinks($leagues){
         for ($i = 0; $i < count($leagues); $i++) {
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
-                if ($leagues[$i]->games[$j]->game_status != 'Scheduled' || $leagues[$i]->games[$j]->game_status != 'Postponed') {
-                    $leagues[$i]->games[$j]->setGameInfo(self::getInfo($leagues[$i]->games[$j]->game_link));
-
+             
+                if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
+                    $leagues[$i]->games[$j]->setGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
+                }else{
+                    //echo 'not checked';
                 }
-            }
+            } 
         }
         return $leagues;
     }
@@ -25,7 +36,7 @@ class GameInfo
 
         $htmlGameInfo = AmUtil::askCurl($hrefOfGame,false);
 
-        return self::ScrapInfo($htmlGameInfo);
+        return $this->ScrapInfo($htmlGameInfo);
 
     }
 

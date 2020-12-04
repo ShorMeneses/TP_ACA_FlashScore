@@ -4,6 +4,8 @@ require_once './League.php';
 require_once './Game.php';
 require_once 'GameInfo.php';
 require_once 'AmUtil.php';
+require_once 'initDBAndScapper/DBCreate.php';
+require_once 'initDBAndScapper/DBInsert.php';
 
 
 
@@ -56,7 +58,7 @@ require_once 'AmUtil.php';
 
     }
 
-    public  function scrapGames($html,$numberOfLeagues){
+    public function scrapGames($html,$numberOfLeagues){
         $texts=array();
         $startSearching =0;
         for ($i=0;$i<$numberOfLeagues;$i++){
@@ -122,13 +124,18 @@ require_once 'AmUtil.php';
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
 
         //Respota dos jogos todos
-       echo json_encode($allInfo);
+       //echo json_encode($allInfo);
+
+       $DBcreate = new DBCreate();
+       $DBInsert = new DBInsert($allInfo);
+
+
 
 
     }
 
         public function cleanMatchTime($matchTime){
-            $pos=   strpos($matchTime,"</s");
+            $pos=strpos($matchTime,"</s");
             if($pos>1){
                 $matchTime = str_replace("</s","", $matchTime);
                 $matchTime = str_replace(">","", $matchTime);
