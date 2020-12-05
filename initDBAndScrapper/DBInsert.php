@@ -14,7 +14,6 @@ class DBInsert{
         $this->leagues = $leagues;
         $this->conn = new mysqli($this->servername, $this->username, $this->password);
         $this->conn ->select_db('FlashscoreDB');
-        echo json_encode($this->leagues);
         self::deleteAll($this->conn);
         $this->insertLeagues($this->conn);
         $this->insertGames($this->conn);
@@ -30,6 +29,8 @@ class DBInsert{
             die("Connection failed: " . $this->conn->connect_error);
         }
 
+        echo "\n Adding leagues";
+
         for ($i=0;$i<count($this->leagues);$i++){
         $leagueName =$this->leagues[$i]->name;
         $leagueName = str_replace("'","",$leagueName);
@@ -37,13 +38,14 @@ class DBInsert{
             $sql = "INSERT INTO FootLeagues (nome) values ('$leagueName')";
 
             if ($conn->query($sql) === TRUE) {
-                echo "\n League added successfully";
+                
             } else {
-                echo "\n Error creating database: " . $this->conn->error;
+                echo "\n Error adding league: " . $this->conn->error;
             }
 
 
         }
+        echo "\n Leagues added";
 
 
     }
@@ -53,7 +55,7 @@ class DBInsert{
 
 
     function insertGames($conn){
-        echo "adding games";
+        echo "\n Adding games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
@@ -61,8 +63,6 @@ class DBInsert{
         for ($i=0;$i<count($this->leagues);$i++){
             foreach ($this->leagues[$i]->games as $game){
 
-
-          //  for ($j=0;$j<count($this->leagues[$i]->games);$j++) {
                 $gameIAmAt = $game;
 
                 $league_id = $i+1;
@@ -91,7 +91,6 @@ class DBInsert{
                 $game_info =json_encode($gameIAmAt->game_info);
                 $game_info = str_replace("'","",$game_info);
 
-                echo '\n '.$league_id;
                 $sql = "INSERT INTO FootGames (league_id,
                         game_time,
                         home_team,
@@ -118,7 +117,7 @@ class DBInsert{
                 }
             }
         }
-        echo "added";
+        echo "\n Added games on ".count($this->leagues). " leagues" ;
 
     }
 

@@ -1,11 +1,11 @@
 <?php
 
-require_once './League.php';
-require_once './Game.php';
+require_once 'DataTypes/League.php';
+require_once 'DataTypes/Game.php';
 require_once 'GameInfo.php';
 require_once 'AmUtil.php';
-require_once 'initDBAndScapper/DBCreate.php';
-require_once 'initDBAndScapper/DBInsert.php';
+require_once 'DBCreate.php';
+require_once 'DBInsert.php';
 
 
 
@@ -21,6 +21,7 @@ require_once 'initDBAndScapper/DBInsert.php';
     public function getSite(){
 
         // TODO on href add various types of game
+        echo "\n Started Scrapping";
         $htmlRes = AmUtil::askCurl('/',false);
 
         self::scrapIt($htmlRes);
@@ -125,7 +126,7 @@ require_once 'initDBAndScapper/DBInsert.php';
         while(true){
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
         $DBInsert = new DBInsert($allInfo);
-        sleep(60);
+        sleep(60*3);  //3 min delay to update info about games
         }
     }
 

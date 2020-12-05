@@ -1,6 +1,6 @@
 <?php
-    require_once '../League.php';
-    require_once '../Game.php';
+    require_once '../initDBAndScrapper/DataTypes/League.php';
+    require_once '../initDBAndScrapper/DataTypes/Game.php';
 
     $fut= new getFutGames();
 

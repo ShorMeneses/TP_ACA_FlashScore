@@ -1,8 +1,8 @@
 <?php
 
-require_once './League.php';
-require_once './FootDetail.php';
-require_once './Game.php';
+require_once 'DataTypes/League.php';
+require_once 'DataTypes/FootDetail.php';
+require_once 'DataTypes/Game.php';
 
 class GameInfo
 {
