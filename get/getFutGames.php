@@ -1,8 +1,9 @@
 <?php
+    require_once '../League.php';
+    require_once '../Game.php';
 
- $fut= new getFutGames();
-require_once '../League.php';
-require_once '../Game.php';
+    $fut= new getFutGames();
+
 
  class getFutGames{
     public $servername = "localhost";
@@ -34,28 +35,33 @@ require_once '../Game.php';
              $l=$leagueDB["id"];
 
              $sql="SELECT * FROM footgames WHERE league_id ='$l' ";
-             $gamesOfLeagues=$conn->query($sql);
-             $gamesTemp=array();
-             while ($gamesOfLeagues=$gamesOfLeagues->fetch_assoc()){
 
-                 $game = new Game($gamesOfLeagues["game_time"],
-                     $gamesOfLeagues["home_team"],
-                     $gamesOfLeagues["away_team"],
-                     $gamesOfLeagues["game_link"],
-                     $gamesOfLeagues["hGoals"],
-                     $gamesOfLeagues["aGoals"],
-                     $gamesOfLeagues["game_status"]
+             $gamesOfLeagues=$conn->query($sql);
+
+             $gamesTemp=array();
+             while ($gameOfLeague=$gamesOfLeagues->fetch_assoc()){
+
+                 $game = new Game($gameOfLeague["game_time"],
+                     $gameOfLeague["home_team"],
+                     $gameOfLeague["away_team"],
+                     $gameOfLeague["game_link"],
+                     $gameOfLeague["hGoals"],
+                     $gameOfLeague["aGoals"],
+                     $gameOfLeague["game_status"]
                  );
-                 $game->setGameInfo($gamesOfLeagues["game_info"]);
+
+                 $arr = (array) json_decode($gameOfLeague["game_info"],true);
+
+                $game->setGameInfo($arr);
                  array_push($gamesTemp,$game);
 
              }
 
              $leagueTemp->pushJogos($gamesTemp);
-
+             array_push($this->leagues,$leagueTemp);
          }
 
-         array_push($this->leagues,$leagueTemp);
+
             echo json_encode($this->leagues);
         }else{
             echo"nada";
