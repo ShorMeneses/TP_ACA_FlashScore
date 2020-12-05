@@ -120,18 +120,13 @@ require_once 'initDBAndScapper/DBInsert.php';
         }
 
         $gameInfo = new GameInfo();
+        $DBcreate = new DBCreate();
 
+        while(true){
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
-
-        //Respota dos jogos todos
-       //echo json_encode($allInfo);
-
-       $DBcreate = new DBCreate();
-       $DBInsert = new DBInsert($allInfo);
-
-
-
-
+        $DBInsert = new DBInsert($allInfo);
+        sleep(60);
+        }
     }
 
         public function cleanMatchTime($matchTime){
@@ -178,6 +173,7 @@ require_once 'initDBAndScapper/DBInsert.php';
 
             return $gamesStatus;
         }
+
 
 
     }

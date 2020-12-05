@@ -10,11 +10,12 @@ class DBInsert{
     public $leagues;
 
     public function __construct($leagues){
+
         $this->leagues = $leagues;
         $this->conn = new mysqli($this->servername, $this->username, $this->password);
         $this->conn ->select_db('FlashscoreDB');
         echo json_encode($this->leagues);
-
+        self::deleteAll($this->conn);
         $this->insertLeagues($this->conn);
         $this->insertGames($this->conn);
         $this->conn->close();
@@ -23,6 +24,8 @@ class DBInsert{
 
 
     function insertLeagues($conn){
+
+
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
@@ -50,6 +53,7 @@ class DBInsert{
 
 
     function insertGames($conn){
+        echo "adding games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
@@ -108,13 +112,34 @@ class DBInsert{
 
 
                 if ($conn->query($sql) === TRUE) {
-                    echo "\n Game added successfully";
+                   // echo "\n Game added successfully";
                 } else {
-                    echo "\n Error creating database: " . $this->conn->error;
+                    echo "\n Error adding game: " . $this->conn->error;
                 }
             }
         }
+        echo "added";
 
+    }
+
+    function deleteAll(mysqli $conn){
+
+
+        $sql = "DELETE FROM footgames ";
+
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table FootGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+        $sql="ALTER TABLE footgames AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
     }
 
 

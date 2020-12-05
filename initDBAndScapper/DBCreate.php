@@ -20,7 +20,6 @@ public $conn;
 
     }
 
-
     function createDataBase($conn){
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
@@ -75,6 +74,7 @@ public $conn;
     }
 
     function deleteAll(mysqli $conn){
+
 
         $sql = "DROP TABLE footgames ";
 
