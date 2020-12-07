@@ -66,29 +66,28 @@ class DBInsert{
 
                 $league_id = $i+1;
                 $game_time =$gameIAmAt->game_time;
-               // $game_time = str_replace("'","",$game_time);
+
 
                 $home_team =$gameIAmAt->home_team;
-              //  $home_team = str_replace("'","",$home_team);
+
 
                 $away_team =$gameIAmAt->away_team;
-              //  $away_team = str_replace("'","",$away_team);
+
 
 
                 $game_status =$gameIAmAt->game_status;
-             //   $game_status = str_replace("'","",$game_status);
+
 
                 $hGoals =$gameIAmAt->hGoals;
-               // $hGoals = str_replace("'","",$hGoals);
 
                 $aGoals =$gameIAmAt->aGoals;
-              //  $aGoals = str_replace("'","",$aGoals);
+
 
                 $game_link =$gameIAmAt->game_link;
-              //  $game_link = str_replace("'","",$game_link);
+
 
                 $game_info =json_encode($gameIAmAt->game_info);
-              //  $game_info = str_replace("'","",$game_info);
+
 
                 $sql = "INSERT INTO FootGames (league_id,
                         game_time,
