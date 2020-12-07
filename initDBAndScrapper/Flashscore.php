@@ -51,7 +51,10 @@ require_once 'DBInsert.php';
 
         foreach ($leaguesHtml as $league) {
             $tempLeagues= new League();
-            $tempLeagues->setLeagueName($league->nodeValue);
+            $tempName=$league->nodeValue;
+            $tempName = str_replace("'","",$tempName);
+            $tempLeagues->setLeagueName($tempName);
+
             array_push($this->leagues,$tempLeagues);
         }
 
@@ -108,10 +111,10 @@ require_once 'DBInsert.php';
                 $matchUrl = self::cleanMatchUrl($gamesUrls[0][$j]);
                 $matchScore = self::cleanMatchScore($gamesScores[0][$j]);
                 $gamesStatus =self::cleanMatchStatus($matchTime,$matchScore);
+                $gameNames=self::cleanGameNames($gamesNames[0][$j]);
 
-                $words = explode("-",$gamesNames[0][$j]);
+                $words = explode("-",$gameNames);
                 $goals = explode(":",$matchScore);
-
 
                 @$tempGame = new Game($matchTime, $words[0],$words[1], $matchUrl,$goals[0],$goals[1],$gamesStatus);
 
@@ -135,6 +138,7 @@ require_once 'DBInsert.php';
             if($pos>1){
                 $matchTime = str_replace("</s","", $matchTime);
                 $matchTime = str_replace(">","", $matchTime);
+                $matchTime = str_replace("'","",$matchTime);
             }
             return $matchTime;
         }
@@ -142,14 +146,22 @@ require_once 'DBInsert.php';
         public function cleanMatchUrl($matchUrl){
             $matchUrl = str_replace('href="',"", $matchUrl);
             $matchUrl = str_replace('"',"", $matchUrl);
+            $matchUrl = str_replace("'","",$matchUrl);
 
             return $matchUrl;
         }
 
         public function cleanMatchScore($matchScore){
             $matchScore = str_replace("</a","", $matchScore);
+            $matchScore = str_replace("'","",$matchScore);
 
             return $matchScore;
+        }
+
+        public function cleanGameNames($gameNames){
+            $gameNames = str_replace("'","",$gameNames);
+
+            return $gameNames;
         }
 
         public function cleanMatchStatus($matchTime,$matchScore){
@@ -171,7 +183,7 @@ require_once 'DBInsert.php';
                                 $gamesStatus = "Finished";
                             }
 
-
+            $gamesStatus = str_replace("'","",$gamesStatus);
             return $gamesStatus;
         }
 

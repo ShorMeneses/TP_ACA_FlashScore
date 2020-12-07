@@ -15,8 +15,8 @@ class FootDetail{
      */
     public function __construct($tempo, $descricao, $tipo)
     {
-        $this->tempo = $tempo;
-        $this->descricao = $descricao;
+        $this->tempo = str_replace("'","",$tempo);
+        $this->descricao =  str_replace("'","",$descricao);;
         $this->tipo = self::helpConstrutor($tipo);
     }
 
@@ -34,7 +34,7 @@ class FootDetail{
         }elseif (strpos($tipo,"substitution")){
             $res="Substitution";
         }
-
+        $res = str_replace("'","",$res);
         return $res;
     }
 

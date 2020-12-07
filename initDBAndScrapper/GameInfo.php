@@ -7,15 +7,6 @@ require_once 'DataTypes/Game.php';
 class GameInfo
 {
 
-    public function contains($haystack,$needle){
-        if(preg_match("/{$needle}/i", $haystack)) {
-            return 'true';
-        }else{
-            return 'false';
-        }
-    }
-
-
     public function getLeaguesLinks($leagues){
         for ($i = 0; $i < count($leagues); $i++) {
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
@@ -51,9 +42,7 @@ class GameInfo
             $res = self::getOccurences($gameParts);
 
         }catch (Exception $e){
-
         }
-
 
         return $res;
 
@@ -110,6 +99,15 @@ class GameInfo
                 }
             }
         return $detailArray;
+    }
+
+
+    public function contains($haystack,$needle){
+        if(preg_match("/{$needle}/i", $haystack)) {
+            return 'true';
+        }else{
+            return 'false';
+        }
     }
 
 }
