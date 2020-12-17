@@ -50,14 +50,14 @@
                      $gameOfLeague["game_status"]
                  );
 
-                 $arr = (array) json_decode($gameOfLeague["game_info"],true);
+               
 
-                $game->setGameInfo($arr);
+                $game->setGameInfo( json_decode($gameOfLeague["game_info"],true));
                  array_push($gamesTemp,$game);
-
+                 $leagueTemp->pushJogos($game);     
              }
 
-             $leagueTemp->pushJogos($gamesTemp);
+            
              array_push($this->leagues,$leagueTemp);
          }
 
