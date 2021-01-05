@@ -1,7 +1,7 @@
 <?php
 require_once 'initDBAndScrapper/Flashscore.php';
 
-$promptMSG =" 1 - Soccer \n 2 - Basketball \n";
+$promptMSG =" 0 - Both \n 1 - Soccer \n 2 - Basketball \n";
 echo $promptMSG;
 $typeOfGame = readline();
 

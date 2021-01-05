@@ -13,6 +13,7 @@ require_once 'DBInsert.php';
         private $leagues;
         private $typeOfGame;
         private $DBcreate;
+        private $whichHtmlDoIHave;
 
         // Constructor
     public function __construct($typeOfGame,$DBcreate ){
@@ -41,6 +42,11 @@ require_once 'DBInsert.php';
         // TODO on href add various types of game
         echo "\n Started Scrapping".$this->typeOfGame;
         $htmlRes = AmUtil::askCurl('/'.$typeOfGameHref,false);
+
+        if ($typeOfGameHref =='basketball/'){
+            $this->whichHtmlDoIHave='basket';
+        }
+
 
         self::scrapIt($htmlRes);
 
@@ -145,7 +151,17 @@ require_once 'DBInsert.php';
 
 
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
-        $DBInsert = new DBInsert($allInfo,$this->typeOfGame);
+
+        if ($this->typeOfGame ==0){
+            if ($this->whichHtmlDoIHave == 'basket'){
+                $DBInsert = new DBInsert($allInfo,2);
+            }else{
+                $DBInsert = new DBInsert($allInfo,1);
+            }
+        }else{
+            $DBInsert = new DBInsert($allInfo,$this->typeOfGame);
+        }
+
        
         
     }
