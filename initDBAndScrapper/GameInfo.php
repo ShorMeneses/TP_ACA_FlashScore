@@ -7,12 +7,14 @@ require_once 'DataTypes/Game.php';
 class GameInfo
 {
 
-    public function getLeaguesLinks($leagues){
+
+
+    public function getLeaguesLinks($sport, $leagues){
         for ($i = 0; $i < count($leagues); $i++) {
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
              
                 if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
-                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
+                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($sport,$leagues[$i]->games[$j]->game_link));
                 }else{
                     //echo 'not checked';
                 }
@@ -23,15 +25,15 @@ class GameInfo
 
 
 
-    public function getInfo($hrefOfGame){
+    public function getInfo($sport,$hrefOfGame){
 
-        $htmlGameInfo = AmUtil::askCurl($hrefOfGame,false);
+        $htmlGameInfo = AmUtil::askCurl($sport,$hrefOfGame,false);
 
-        return $this->ScrapInfo($htmlGameInfo);
+        return $this->ScrapInfo($sport,$htmlGameInfo);
 
     }
 
-    public function ScrapInfo($htmlGameInfo){
+    public function ScrapInfo($sport,$htmlGameInfo){
 
 
         try {
@@ -39,7 +41,12 @@ class GameInfo
             @$domDocument->loadHTML($htmlGameInfo);
 
             $gameParts = $domDocument;
-            $res = self::getOccurences($gameParts);
+
+            if($sport=="Foot"){
+                $res = self::getFOccurences($gameParts);
+            }elseif ($sport="Bask"){
+                $res = self::getBOccurences($gameParts);
+            }
 
         }catch (Exception $e){
         }
@@ -48,8 +55,12 @@ class GameInfo
 
     }
 
+    private static function getBOccurences(DOMDocument $gameParts){
+        return "";
 
-    private static function getOccurences($gameParts){
+    }
+
+    private static function getFOccurences($gameParts){
 
         $res = array();
         $detailArray1H=array();

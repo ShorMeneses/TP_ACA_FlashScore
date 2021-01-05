@@ -18,17 +18,17 @@ require_once 'DBInsert.php';
 
     }
 
-    public function getSite(){
+    public function getSite($sport){
 
         // TODO on href add various types of game
         echo "\n Started Scrapping";
-        $htmlRes = AmUtil::askCurl('/',false);
+        $htmlRes = AmUtil::askCurl($sport,'/',false);
 
-        self::scrapIt($htmlRes);
+        self::scrapIt($sport,$htmlRes);
 
     }
 
-    public  function scrapIt($htmlRes){
+    public  function scrapIt($sport,$htmlRes){
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
 
@@ -38,10 +38,10 @@ require_once 'DBInsert.php';
 
         $html = substr($htmlRes, $startPos, $length);
 
-        self::loadHtml($html);
+        self::loadHtml($sport,$html);
     }
 
-    public function loadHtml($html){
+    public function loadHtml($sport,$html){
         $this->leagues = array();
         $domDocument=new DOMDocument();
         @$domDocument->loadHTML($html);
@@ -58,11 +58,11 @@ require_once 'DBInsert.php';
             array_push($this->leagues,$tempLeagues);
         }
 
-        self::scrapGames($html,count($this->leagues));
+        self::scrapGames($sport,$html,count($this->leagues));
 
     }
 
-    public function scrapGames($html,$numberOfLeagues){
+    public function scrapGames($sport,$html,$numberOfLeagues){
         $texts=array();
         $startSearching =0;
         for ($i=0;$i<$numberOfLeagues;$i++){
@@ -81,11 +81,11 @@ require_once 'DBInsert.php';
 
         }
 
-        self::getInfoFromGamesHTML($texts);
+        self::getInfoFromGamesHTML($sport,$texts);
 
     }
 
-    public function getInfoFromGamesHTML($leaguesFromHTML){
+    public function getInfoFromGamesHTML($sport,$leaguesFromHTML){
 
 
         for ($i=0;$i<count($leaguesFromHTML);$i++){
@@ -127,7 +127,7 @@ require_once 'DBInsert.php';
         $DBcreate = new DBCreate();
 
         while(true){
-        $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
+        $allInfo = $gameInfo ->getLeaguesLinks($sport,$this->leagues);
         $DBInsert = new DBInsert($allInfo);
         sleep(60*3);  //3 min delay to update info about games
         }
