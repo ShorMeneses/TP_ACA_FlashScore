@@ -2,10 +2,10 @@
     require_once '../initDBAndScrapper/DataTypes/League.php';
     require_once '../initDBAndScrapper/DataTypes/Game.php';
 
-    $fut= new getFutGames();
+    $fut= new getBasketGames();
 
 
- class getFutGames{
+ class getBasketGames{
     public $servername = "localhost";
     public $username = "root";
     public $password = "";
@@ -24,7 +24,7 @@
     public function getGames($conn){
 
 
-        $sql="SELECT * FROM FootLeagues";
+        $sql="SELECT * FROM BasketLeagues";
 
         $leaguesDB= $conn->query($sql);
 
@@ -34,7 +34,7 @@
              $leagueTemp->setLeagueName($leagueDB["nome"]);
              $l=$leagueDB["id"];
 
-             $sql="SELECT * FROM footgames WHERE league_id ='$l' ";
+             $sql="SELECT * FROM basketgames WHERE league_id ='$l' ";
 
              $gamesOfLeagues=$conn->query($sql);
 
@@ -48,16 +48,12 @@
                      $gameOfLeague["hGoals"],
                      $gameOfLeague["aGoals"],
                      $gameOfLeague["game_status"]
+
                  );
                 
                
-<<<<<<< Updated upstream
-
-                $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
-=======
                  $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
                  $game->setFutGameLineUp($gameOfLeague["game_lineup"]);
->>>>>>> Stashed changes
                  array_push($gamesTemp,$game);
                  $leagueTemp->pushJogos($game);     
              }
@@ -65,6 +61,7 @@
             
              array_push($this->leagues,$leagueTemp);
          }
+
 
             echo json_encode($this->leagues);
         }else{

@@ -92,9 +92,13 @@ public $conn;
             echo "\n Error on deleting table: " . $this->conn->error;
         }
 
+<<<<<<< Updated upstream
 
 
     }
+=======
+}
+>>>>>>> Stashed changes
 
 
 }

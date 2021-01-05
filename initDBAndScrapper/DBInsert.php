@@ -1,7 +1,7 @@
 <?php
 
-
-class DBInsert{
+class DBInsert
+{
 
     public $servername = "localhost";
     public $username = "root";
@@ -9,6 +9,7 @@ class DBInsert{
     public $conn;
     public $leagues;
 
+<<<<<<< Updated upstream
     public function __construct($leagues){
 
         $this->leagues = $leagues;
@@ -17,13 +18,57 @@ class DBInsert{
         self::deleteAll($this->conn);
         $this->insertLeagues($this->conn);
         $this->insertGames($this->conn);
+=======
+    public function __construct($leagues, $typeOfGame)
+    {
+        $this->typeOfGame = $typeOfGame;
+        $this->leagues = $leagues;
+        $this->conn = new mysqli($this->servername, $this->username, $this->password);
+        $this->conn->select_db('FlashscoreDB');
+        $this->bdHandler();
+>>>>>>> Stashed changes
         $this->conn->close();
 
     }
 
+<<<<<<< Updated upstream
 
     function insertLeagues($conn){
 
+=======
+    public function bdHandler()
+    {
+        switch ($this->typeOfGame) {
+            case 0:
+                $this->bdHandlerSoccer();
+                $this->bdHandlerBasket();
+                break;
+            case 1:
+                $this->bdHandlerSoccer();
+                break;
+            case 2:
+                $this->bdHandlerBasket();
+                break;
+        }
+    }
+
+    public function bdHandlerSoccer()
+    {
+        $this->deleteAllSoccer($this->conn);
+        $this->insertLeaguesSoccer($this->conn);
+        $this->insertGamesSoccer($this->conn);
+    }
+
+    public function bdHandlerBasket()
+    {
+        $this->deleteAllBasket($this->conn);
+        $this->insertLeaguesBasket($this->conn);
+        $this->insertGamesBasket($this->conn);
+    }
+
+    public function insertLeaguesSoccer($conn)
+    {
+>>>>>>> Stashed changes
 
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
@@ -31,38 +76,41 @@ class DBInsert{
 
         echo "\n Adding leagues";
 
-        for ($i=0;$i<count($this->leagues);$i++){
-        $leagueName =$this->leagues[$i]->name;
+        for ($i = 0; $i < count($this->leagues); $i++) {
+            $leagueName = $this->leagues[$i]->name;
 
             $sql = "INSERT INTO FootLeagues (nome) values ('$leagueName')";
 
-            if ($conn->query($sql) === TRUE) {
-                
+            if ($conn->query($sql) === true) {
+
             } else {
                 echo "\n Error adding league: " . $this->conn->error;
             }
 
-
         }
         echo "\n Leagues added";
 
-
     }
-
 
     //------------------------------------
 
+<<<<<<< Updated upstream
 
     function insertGames($conn){
+=======
+    public function insertGamesSoccer($conn)
+    {
+>>>>>>> Stashed changes
         echo "\n Adding games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
 
-        for ($i=0;$i<count($this->leagues);$i++){
-            foreach ($this->leagues[$i]->games as $game){
+        for ($i = 0; $i < count($this->leagues); $i++) {
+            foreach ($this->leagues[$i]->games as $game) {
 
                 $gameIAmAt = $game;
+<<<<<<< Updated upstream
 
                 $league_id = $i+1;
                 $game_time =$gameIAmAt->game_time;
@@ -88,6 +136,19 @@ class DBInsert{
 
                 $game_info =json_encode($gameIAmAt->game_info);
 
+=======
+                $league_id = $i + 1;
+                $game_time = $gameIAmAt->game_time;
+                $home_team = $gameIAmAt->home_team;
+                $away_team = $gameIAmAt->away_team;
+                $game_status = $gameIAmAt->game_status;
+                $hGoals = $gameIAmAt->hGoals;
+                $aGoals = $gameIAmAt->aGoals;
+                $game_link = $gameIAmAt->game_link;
+                $game_lineup = $gameIAmAt->game_lineup;
+
+                $game_info = json_encode($gameIAmAt->game_info);
+>>>>>>> Stashed changes
 
                 $sql = "INSERT INTO FootGames (league_id,
                         game_time,
@@ -107,37 +168,180 @@ class DBInsert{
                         '$game_link',
                         '$game_info')";
 
-
-                if ($conn->query($sql) === TRUE) {
-                   // echo "\n Game added successfully";
+                if ($conn->query($sql) === true) {
+                    // echo "\n Game added successfully";
                 } else {
                     echo "\n Error adding game: " . $this->conn->error;
                 }
             }
         }
-        echo "\n Added games on ".count($this->leagues). " leagues" ;
+        echo "\n Added games on " . count($this->leagues) . " leagues";
 
     }
 
+<<<<<<< Updated upstream
     function deleteAll(mysqli $conn){
 
+=======
+    public function deleteAllBasket(mysqli $conn)
+    {
+
+        $sql = "DELETE FROM basketgames ";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table BasketGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "ALTER TABLE basketgames AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table BasketGames auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+        $sql = "DELETE FROM basketleagues ";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table BasketLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "ALTER TABLE basketleagues AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table BasketLeagues auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+    }
+
+    public function deleteAllSoccer(mysqli $conn)
+    {
+>>>>>>> Stashed changes
 
         $sql = "DELETE FROM footgames ";
 
-
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table FootGames deleted successfully";
         } else {
             echo "\n Error on deleting table: " . $this->conn->error;
         }
+<<<<<<< Updated upstream
         $sql="ALTER TABLE footgames AUTO_INCREMENT = 1";
 
         if ($conn->query($sql) === TRUE) {
             echo "\n Table auto increment reset";
+=======
+
+        $sql = "ALTER TABLE footgames AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table FootGames auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+        $sql = "DELETE FROM footleagues ";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table footLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "ALTER TABLE footleagues AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === true) {
+            echo "\n Table FootLeagues auto increment reset";
+>>>>>>> Stashed changes
         } else {
             echo "\n Error on suto increment reset" . $this->conn->error;
         }
     }
 
+<<<<<<< Updated upstream
 
 }
+=======
+    public function insertLeaguesBasket($conn)
+    {
+
+        echo "\n Adding Basketball leagues";
+
+        for ($i = 0; $i < count($this->leagues); $i++) {
+            $leagueName = $this->leagues[$i]->name;
+
+            $sql = "INSERT INTO BasketLeagues (nome) values ('$leagueName')";
+
+            if ($conn->query($sql) === true) {
+
+            } else {
+                echo "\n Error adding league: " . $this->conn->error;
+            }
+
+        }
+        echo "\n Basketball Leagues added";
+
+    }
+
+    public function insertGamesBasket($conn)
+    {
+        echo "\n Adding Basketball games";
+        if ($conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
+        }
+
+        for ($i = 0; $i < count($this->leagues); $i++) {
+            foreach ($this->leagues[$i]->games as $game) {
+
+                $gameIAmAt = $game;
+                $league_id = $i + 1;
+                $game_time = $gameIAmAt->game_time;
+                $home_team = $gameIAmAt->home_team;
+                $away_team = $gameIAmAt->away_team;
+                $game_status = $gameIAmAt->game_status;
+                $hGoals = $gameIAmAt->hGoals;
+                $aGoals = $gameIAmAt->aGoals;
+                $game_link = $gameIAmAt->game_link;
+                $game_lineup = $gameIAmAt->game_lineup;
+
+                $game_info = json_encode($gameIAmAt->game_info);
+
+                $sql = "INSERT INTO BasketGames (league_id,
+                        game_time,
+                        home_team,
+                        away_team,
+                        game_status,
+                        hGoals,
+                        aGoals,
+                        game_link,
+                        game_info,
+                        game_lineup) values ('$league_id',
+                        '$game_time',
+                        '$home_team',
+                        '$away_team',
+                        '$game_status',
+                        '$hGoals',
+                        '$aGoals',
+                        '$game_link',
+                        '$game_info',
+                        '$game_lineup')";
+
+                if ($conn->query($sql) === true) {
+                    // echo "\n Game added successfully";
+                } else {
+                    echo "\n Error adding game: " . $this->conn->error;
+                }
+            }
+        }
+        echo "\n Added Basketball games on " . count($this->leagues) . " leagues";
+
+    }
+
+}
+>>>>>>> Stashed changes

@@ -7,6 +7,7 @@ require_once 'AmUtil.php';
 require_once 'DBCreate.php';
 require_once 'DBInsert.php';
 
+<<<<<<< Updated upstream
 
 
     class Flashscore {
@@ -23,61 +24,111 @@ require_once 'DBInsert.php';
         // TODO on href add various types of game
         echo "\n Started Scrapping";
         $htmlRes = AmUtil::askCurl('/',false);
+=======
+class Flashscore
+{
+    private $leagues;
+    private $typeOfGame;
+    private $whichHtmlDoIHave;
+
+    // Constructor
+    public function __construct($typeOfGame)
+    {
+        $this->typeOfGame = $typeOfGame;
+    }
+
+    public function handlerGetSite()
+    {
+        switch ($this->typeOfGame) {
+            case 0:
+                $this->getSite('');
+                $this->getSite('basketball/');
+                sleep(10);
+                $this->handlerGetSite();
+                break;
+            case 1:
+                $this->getSite('');
+                sleep(5);
+                $this->handlerGetSite();
+                break;
+            case 2:
+                $this->getSite('basketball/');
+                sleep(5);
+                $this->handlerGetSite();
+                break;
+        }
+
+       
+        }
+
+    public function getSite($typeOfGameHref)
+    {
+
+        // TODO on href add various types of game
+        echo "\n Started Scrapping" ;
+        $htmlRes = AmUtil::askCurl('/' . $typeOfGameHref, false);
+
+        if ($typeOfGameHref == 'basketball/') {
+            $this->whichHtmlDoIHave = 'basket';
+        }
+>>>>>>> Stashed changes
 
         self::scrapIt($htmlRes);
 
     }
 
-    public  function scrapIt($htmlRes){
+    public function scrapIt($htmlRes)
+    {
 
-        $startPos =stripos($htmlRes, '<div id="score-data"');
+        $startPos = stripos($htmlRes, '<div id="score-data"');
 
-        $end = stripos($htmlRes,'<p class="advert-bottom"',$offset=$startPos);
+        $end = stripos($htmlRes, '<p class="advert-bottom"', $offset = $startPos);
 
-        $length = $end-$startPos;
+        $length = $end - $startPos;
 
         $html = substr($htmlRes, $startPos, $length);
 
         self::loadHtml($html);
     }
 
-    public function loadHtml($html){
+    public function loadHtml($html)
+    {
         $this->leagues = array();
-        $domDocument=new DOMDocument();
+        $domDocument = new DOMDocument();
         @$domDocument->loadHTML($html);
 
-        $leaguesHtml= $domDocument->getElementsByTagName('h4');
-
+        $leaguesHtml = $domDocument->getElementsByTagName('h4');
 
         foreach ($leaguesHtml as $league) {
-            $tempLeagues= new League();
-            $tempName=$league->nodeValue;
-            $tempName = str_replace("'","",$tempName);
+            $tempLeagues = new League();
+            $tempName = $league->nodeValue;
+            $tempName = str_replace("'", "", $tempName);
             $tempLeagues->setLeagueName($tempName);
 
-            array_push($this->leagues,$tempLeagues);
+            array_push($this->leagues, $tempLeagues);
         }
 
-        self::scrapGames($html,count($this->leagues));
+        self::scrapGames($html, count($this->leagues));
 
     }
 
-    public function scrapGames($html,$numberOfLeagues){
-        $texts=array();
-        $startSearching =0;
-        for ($i=0;$i<$numberOfLeagues;$i++){
-            $startPos =stripos($html, '<h4>',$startSearching);
+    public function scrapGames($html, $numberOfLeagues)
+    {
+        $texts = array();
+        $startSearching = 0;
+        for ($i = 0; $i < $numberOfLeagues; $i++) {
+            $startPos = stripos($html, '<h4>', $startSearching);
 
-        if($i == $numberOfLeagues-1){
-            $end = stripos($html,'</div>');
-        }else{
-            $end = stripos($html,'<h4>',$offset=$startPos+1);
-        }
+            if ($i == $numberOfLeagues - 1) {
+                $end = stripos($html, '</div>');
+            } else {
+                $end = stripos($html, '<h4>', $offset = $startPos + 1);
+            }
 
-            $length = $end-$startPos;
-            array_push($texts,substr($html, $startPos, $length));
+            $length = $end - $startPos;
+            array_push($texts, substr($html, $startPos, $length));
 
-            $startSearching=$end;
+            $startSearching = $end;
 
         }
 
@@ -85,44 +136,43 @@ require_once 'DBInsert.php';
 
     }
 
-    public function getInfoFromGamesHTML($leaguesFromHTML){
+    public function getInfoFromGamesHTML($leaguesFromHTML)
+    {
 
+        for ($i = 0; $i < count($leaguesFromHTML); $i++) {
+            $gamesNames = array();
+            $gamesUrls = array();
+            $gamesTime = array();
+            $gamesScores = array();
+            $gamesStatus = "";
 
-        for ($i=0;$i<count($leaguesFromHTML);$i++){
-            $gamesNames=array();
-            $gamesUrls=array();
-            $gamesTime=array();
-            $gamesScores=array();
-            $gamesStatus="";
+            preg_match_all('/(?<=<\/span>)[^<]+/', $leaguesFromHTML[$i], $gamesNames, PREG_PATTERN_ORDER); //Game Names
 
-            preg_match_all('/(?<=<\/span>)[^<]+/',$leaguesFromHTML[$i],$gamesNames,PREG_PATTERN_ORDER);  //Game Names
+            preg_match_all('/href="[^>]+" /', $leaguesFromHTML[$i], $gamesUrls, PREG_PATTERN_ORDER); //URL's games
 
-            preg_match_all('/href="[^>]+" /',$leaguesFromHTML[$i],$gamesUrls,PREG_PATTERN_ORDER);  //URL's games
+            preg_match_all('/>[^>]+<\/s/', $leaguesFromHTML[$i], $gamesTime, PREG_PATTERN_ORDER); //Times games
 
-            preg_match_all('/>[^>]+<\/s/',$leaguesFromHTML[$i],$gamesTime,PREG_PATTERN_ORDER);  //Times games
+            preg_match_all('/[^>]+<\/a/', $leaguesFromHTML[$i], $gamesScores, PREG_PATTERN_ORDER); //Scores games
 
-            preg_match_all('/[^>]+<\/a/',$leaguesFromHTML[$i],$gamesScores,PREG_PATTERN_ORDER);  //Scores games
-
-
-            for ($j=0;$j<count($gamesNames[0]);$j++) {
-
+            for ($j = 0; $j < count($gamesNames[0]); $j++) {
 
                 $matchTime = self::cleanMatchTime($gamesTime[0][$j]);
                 $matchUrl = self::cleanMatchUrl($gamesUrls[0][$j]);
                 $matchScore = self::cleanMatchScore($gamesScores[0][$j]);
-                $gamesStatus =self::cleanMatchStatus($matchTime,$matchScore);
-                $gameNames=self::cleanGameNames($gamesNames[0][$j]);
+                $gamesStatus = self::cleanMatchStatus($matchTime, $matchScore);
+                $gameNames = self::cleanGameNames($gamesNames[0][$j]);
 
-                $words = explode("-",$gameNames);
-                $goals = explode(":",$matchScore);
+                $words = explode("-", $gameNames);
+                $goals = explode(":", $matchScore);
 
-                @$tempGame = new Game($matchTime, $words[0],$words[1], $matchUrl,$goals[0],$goals[1],$gamesStatus);
+                @$tempGame = new Game($matchTime, $words[0], $words[1], $matchUrl, $goals[0], $goals[1], $gamesStatus);
 
                 $this->leagues[$i]->pushJogos($tempGame);
 
             }
         }
 
+<<<<<<< Updated upstream
         $gameInfo = new GameInfo();
         $DBcreate = new DBCreate();
 
@@ -132,61 +182,89 @@ require_once 'DBInsert.php';
         sleep(60*3);  //3 min delay to update info about games
         }
     }
-
-        public function cleanMatchTime($matchTime){
-            $pos=strpos($matchTime,"</s");
-            if($pos>1){
-                $matchTime = str_replace("</s","", $matchTime);
-                $matchTime = str_replace(">","", $matchTime);
-                $matchTime = str_replace("'","",$matchTime);
+=======
+        if ($this->typeOfGame == 0) {
+            if ($this->whichHtmlDoIHave == 'basket') {
+                $gameInfo = new GameInfo(2);
+            } else {
+                $gameInfo = new GameInfo(1);
             }
-            return $matchTime;
+        } else {
+            $gameInfo = new GameInfo($this->typeOfGame);
         }
 
-        public function cleanMatchUrl($matchUrl){
-            $matchUrl = str_replace('href="',"", $matchUrl);
-            $matchUrl = str_replace('"',"", $matchUrl);
-            $matchUrl = str_replace("'","",$matchUrl);
+        $allInfo = $gameInfo->getLeaguesLinks($this->leagues);
+>>>>>>> Stashed changes
 
-            return $matchUrl;
+        if ($this->typeOfGame == 0) {
+            if ($this->whichHtmlDoIHave == 'basket') {
+                $DBInsert = new DBInsert($allInfo, 2);
+            } else {
+                $DBInsert = new DBInsert($allInfo, 1);
+            }
+        } else {
+            $DBInsert = new DBInsert($allInfo, $this->typeOfGame);
         }
-
-        public function cleanMatchScore($matchScore){
-            $matchScore = str_replace("</a","", $matchScore);
-            $matchScore = str_replace("'","",$matchScore);
-
-            return $matchScore;
-        }
-
-        public function cleanGameNames($gameNames){
-            $gameNames = str_replace("'","",$gameNames);
-
-            return $gameNames;
-        }
-
-        public function cleanMatchStatus($matchTime,$matchScore){
-            $gamesStatus ='Error';
-
-            if($matchTime=="Half Time"){
-                $gamesStatus="Half Time";
-
-                }elseif($matchTime=="Postponed"){
-                    $gamesStatus="Postponed";
-
-                    }elseif (strpos($matchScore,"-:-")!==false){
-                        $gamesStatus="Scheduled";
-
-                        }elseif (strlen($matchTime) <4 ) {
-                            $gamesStatus = "Live";
-
-                            }elseif(strpos($matchTime,":") ){
-                                $gamesStatus = "Finished";
-                            }
-
-            $gamesStatus = str_replace("'","",$gamesStatus);
-            return $gamesStatus;
-        }
-
-
 
     }
+
+    public function cleanMatchTime($matchTime)
+    {
+        $pos = strpos($matchTime, "</s");
+        if ($pos > 1) {
+            $matchTime = str_replace("</s", "", $matchTime);
+            $matchTime = str_replace(">", "", $matchTime);
+            $matchTime = str_replace("'", "", $matchTime);
+        }
+        return $matchTime;
+    }
+
+    public function cleanMatchUrl($matchUrl)
+    {
+        $matchUrl = str_replace('href="', "", $matchUrl);
+        $matchUrl = str_replace('"', "", $matchUrl);
+        $matchUrl = str_replace("'", "", $matchUrl);
+
+        return $matchUrl;
+    }
+
+    public function cleanMatchScore($matchScore)
+    {
+        $matchScore = str_replace("</a", "", $matchScore);
+        $matchScore = str_replace("'", "", $matchScore);
+
+        return $matchScore;
+    }
+
+    public function cleanGameNames($gameNames)
+    {
+        $gameNames = str_replace("'", "", $gameNames);
+
+        return $gameNames;
+    }
+
+    public function cleanMatchStatus($matchTime, $matchScore)
+    {
+        $gamesStatus = 'Error';
+
+        if ($matchTime == "Half Time") {
+            $gamesStatus = "Half Time";
+
+        } elseif ($matchTime == "Postponed") {
+            $gamesStatus = "Postponed";
+
+        } elseif (strpos($matchScore, "-:-") !== false) {
+            $gamesStatus = "Scheduled";
+
+        } elseif (strlen($matchTime) < 4) {
+            $gamesStatus = "Live";
+
+        } elseif (strpos($matchTime, ":")) {
+            $gamesStatus = "Finished";
+        }
+
+        $gamesStatus = str_replace("'", "", $gamesStatus);
+        return $gamesStatus;
+    }
+
+}
