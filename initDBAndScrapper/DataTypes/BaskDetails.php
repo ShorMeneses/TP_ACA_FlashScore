@@ -52,7 +52,7 @@ class BaskDetails
 
     public function __toString()
     {
-     return "";
+     return $this->part ."  ".$this->score ;
     }
 
 
