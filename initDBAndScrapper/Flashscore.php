@@ -11,24 +11,39 @@ require_once 'DBInsert.php';
 
     class Flashscore {
         private $leagues;
-
+        private $typeOfGame;
 
         // Constructor
-    public function __construct(){
-
+    public function __construct($typeOfGame){
+       $this->typeOfGame = $typeOfGame;
     }
 
-    public function getSite($sport){
+    public function handlerGetSite(){
+        switch ($this->typeOfGame) {
+          /*  case 0:
+                $this->getSite('');
+                $this->getSite('basketball/');
+                break;*/
+            case 1:
+                $this->getSite('');
+                break;
+            case 2:
+                $this->getSite('basketball/');
+                break;
+        }
+    }
+
+    public function getSite($typeOfGameHref){
 
         // TODO on href add various types of game
-        echo "\n Started Scrapping";
-        $htmlRes = AmUtil::askCurl($sport,'/',false);
+        echo "\n Started Scrapping".$this->typeOfGame;
+        $htmlRes = AmUtil::askCurl('/'.$typeOfGameHref,false);
 
-        self::scrapIt($sport,$htmlRes);
+        self::scrapIt($htmlRes);
 
     }
 
-    public  function scrapIt($sport,$htmlRes){
+    public  function scrapIt($htmlRes){
 
         $startPos =stripos($htmlRes, '<div id="score-data"');
 
@@ -38,10 +53,10 @@ require_once 'DBInsert.php';
 
         $html = substr($htmlRes, $startPos, $length);
 
-        self::loadHtml($sport,$html);
+        self::loadHtml($html);
     }
 
-    public function loadHtml($sport,$html){
+    public function loadHtml($html){
         $this->leagues = array();
         $domDocument=new DOMDocument();
         @$domDocument->loadHTML($html);
@@ -58,11 +73,11 @@ require_once 'DBInsert.php';
             array_push($this->leagues,$tempLeagues);
         }
 
-        self::scrapGames($sport,$html,count($this->leagues));
+        self::scrapGames($html,count($this->leagues));
 
     }
 
-    public function scrapGames($sport,$html,$numberOfLeagues){
+    public function scrapGames($html,$numberOfLeagues){
         $texts=array();
         $startSearching =0;
         for ($i=0;$i<$numberOfLeagues;$i++){
@@ -81,11 +96,11 @@ require_once 'DBInsert.php';
 
         }
 
-        self::getInfoFromGamesHTML($sport,$texts);
+        self::getInfoFromGamesHTML($texts);
 
     }
 
-    public function getInfoFromGamesHTML($sport,$leaguesFromHTML){
+    public function getInfoFromGamesHTML($leaguesFromHTML){
 
 
         for ($i=0;$i<count($leaguesFromHTML);$i++){
@@ -126,11 +141,10 @@ require_once 'DBInsert.php';
         $gameInfo = new GameInfo();
         $DBcreate = new DBCreate();
 
-        while(true){
-        $allInfo = $gameInfo ->getLeaguesLinks($sport,$this->leagues);
-        $DBInsert = new DBInsert($allInfo);
-        sleep(60*3);  //3 min delay to update info about games
-        }
+        $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
+        $DBInsert = new DBInsert($allInfo,$this->typeOfGame);
+       
+        
     }
 
         public function cleanMatchTime($matchTime){

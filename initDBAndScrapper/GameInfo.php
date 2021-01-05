@@ -9,12 +9,12 @@ class GameInfo
 
 
 
-    public function getLeaguesLinks($sport, $leagues){
+    public function getLeaguesLinks($leagues){
         for ($i = 0; $i < count($leagues); $i++) {
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
              
                 if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
-                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($sport,$leagues[$i]->games[$j]->game_link));
+                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
                 }else{
                     //echo 'not checked';
                 }
@@ -25,15 +25,15 @@ class GameInfo
 
 
 
-    public function getInfo($sport,$hrefOfGame){
+    public function getInfo($hrefOfGame){
 
-        $htmlGameInfo = AmUtil::askCurl($sport,$hrefOfGame,false);
+        $htmlGameInfo = AmUtil::askCurl($hrefOfGame,false);
 
-        return $this->ScrapInfo($sport,$htmlGameInfo);
+        return $this->ScrapInfo($htmlGameInfo);
 
     }
 
-    public function ScrapInfo($sport,$htmlGameInfo){
+    public function ScrapInfo($htmlGameInfo){
 
 
         try {
@@ -42,11 +42,9 @@ class GameInfo
 
             $gameParts = $domDocument;
 
-            if($sport=="Foot"){
+        
                 $res = self::getFOccurences($gameParts);
-            }elseif ($sport="Bask"){
-                $res = self::getBOccurences($gameParts);
-            }
+           
 
         }catch (Exception $e){
         }
@@ -55,10 +53,7 @@ class GameInfo
 
     }
 
-    private static function getBOccurences(DOMDocument $gameParts){
-        return "";
-
-    }
+    
 
     private static function getFOccurences($gameParts){
 

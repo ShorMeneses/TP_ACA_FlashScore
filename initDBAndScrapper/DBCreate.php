@@ -69,6 +69,40 @@ public $conn;
             echo "\n Error creating table: " . $this->conn->error;
         }
 
+        //---------------------------------------------------BASKET
+
+        $sql = "CREATE TABLE IF NOT EXISTS BasketLeagues (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(100) NOT NULL)";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketLeagues created successfully";
+        } else {
+            echo "\n Error creating table: " . $this->conn->error;
+        }
+
+        //--------------------------------------------------------------
+
+        $sql = "CREATE TABLE IF NOT EXISTS BasketGames (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            league_id INT(6) UNSIGNED,
+            game_time VARCHAR(100),
+             home_team VARCHAR(100),
+             away_team VARCHAR(100),
+             game_status VARCHAR(100),
+             hGoals VARCHAR(100),
+             aGoals VARCHAR(100),
+             game_link VARCHAR(100),
+             game_info VARCHAR(65535),
+             FOREIGN KEY (league_id) REFERENCES basketleagues(id)
+             )";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketGames created successfully";
+        } else {
+            echo "\n Error creating table: " . $this->conn->error;
+        }
+
 
 
     }
@@ -88,6 +122,14 @@ public $conn;
 
         if ($conn->query($sql) === TRUE) {
             echo "\n Table FootLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "DROP TABLE basketleagues ";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table basketleagues deleted successfully";
         } else {
             echo "\n Error on deleting table: " . $this->conn->error;
         }
