@@ -62,7 +62,15 @@ class Game
     /**
      * @param mixed $game_info
      */
-    public function setGameInfo($game_info)
+    public function setFutGameInfo($game_info)
+    {
+        $this->game_info = $game_info;
+    }
+
+    /**
+     * @param mixed $game_info
+     */
+    public function setBaskGameInfo($game_info)
     {
         $this->game_info = $game_info;
     }

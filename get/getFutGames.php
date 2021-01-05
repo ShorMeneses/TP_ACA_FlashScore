@@ -52,7 +52,7 @@
 
                
 
-                $game->setGameInfo( json_decode($gameOfLeague["game_info"],true));
+                $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
                  array_push($gamesTemp,$game);
                  $leagueTemp->pushJogos($game);     
              }

@@ -12,7 +12,7 @@ class GameInfo
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
              
                 if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
-                    $leagues[$i]->games[$j]->setGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
+                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
                 }else{
                     //echo 'not checked';
                 }
