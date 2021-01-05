@@ -51,13 +51,8 @@
                  );
                 
                
-<<<<<<< Updated upstream
-
-                $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
-=======
                  $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
                  $game->setFutGameLineUp($gameOfLeague["game_lineup"]);
->>>>>>> Stashed changes
                  array_push($gamesTemp,$game);
                  $leagueTemp->pushJogos($game);     
              }

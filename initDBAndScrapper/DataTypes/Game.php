@@ -11,7 +11,7 @@ class Game
     public $aGoals;
     public $game_link;
     public $game_info;
-
+    public $game_lineup;
     /**
      * Game constructor.
      * @param $game_time
@@ -20,7 +20,7 @@ class Game
      * @param $game_status
      * @param $hGoals;
      * @param $aGoals;
-     * @param $game_link
+     * @param $game_link;
      */
 
     public function __construct($game_time, $home_team, $away_team, $game_link,$hGoals,$aGoals,$game_status)
@@ -32,6 +32,7 @@ class Game
         $this->hGoals = $hGoals;
         $this->aGoals = $aGoals;
         $this->game_status= $game_status;
+
     }
 
     /**
@@ -73,6 +74,22 @@ class Game
     public function setBaskGameInfo($game_info)
     {
         $this->game_info = $game_info;
+    }
+
+    /**
+     * @param mixed $game_lineup
+     */
+    public function setFutGameLineUp($game_lineup)
+    {
+        $this->game_lineup = $game_lineup;
+    }
+
+    /**
+     * @param mixed $game_lineup
+     */
+    public function setBaskGameLineUp($game_lineup)
+    {
+        $this->game_lineup = $game_lineup;
     }
 
     /**

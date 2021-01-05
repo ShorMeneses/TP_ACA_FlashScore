@@ -7,24 +7,6 @@ require_once 'AmUtil.php';
 require_once 'DBCreate.php';
 require_once 'DBInsert.php';
 
-<<<<<<< Updated upstream
-
-
-    class Flashscore {
-        private $leagues;
-
-
-        // Constructor
-    public function __construct(){
-
-    }
-
-    public function getSite(){
-
-        // TODO on href add various types of game
-        echo "\n Started Scrapping";
-        $htmlRes = AmUtil::askCurl('/',false);
-=======
 class Flashscore
 {
     private $leagues;
@@ -71,7 +53,6 @@ class Flashscore
         if ($typeOfGameHref == 'basketball/') {
             $this->whichHtmlDoIHave = 'basket';
         }
->>>>>>> Stashed changes
 
         self::scrapIt($htmlRes);
 
@@ -172,17 +153,6 @@ class Flashscore
             }
         }
 
-<<<<<<< Updated upstream
-        $gameInfo = new GameInfo();
-        $DBcreate = new DBCreate();
-
-        while(true){
-        $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
-        $DBInsert = new DBInsert($allInfo);
-        sleep(60*3);  //3 min delay to update info about games
-        }
-    }
-=======
         if ($this->typeOfGame == 0) {
             if ($this->whichHtmlDoIHave == 'basket') {
                 $gameInfo = new GameInfo(2);
@@ -194,7 +164,6 @@ class Flashscore
         }
 
         $allInfo = $gameInfo->getLeaguesLinks($this->leagues);
->>>>>>> Stashed changes
 
         if ($this->typeOfGame == 0) {
             if ($this->whichHtmlDoIHave == 'basket') {

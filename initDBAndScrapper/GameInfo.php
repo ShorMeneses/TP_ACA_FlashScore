@@ -7,17 +7,6 @@ require_once 'DataTypes/Game.php';
 
 class GameInfo
 {
-<<<<<<< Updated upstream
-
-    public function getLeaguesLinks($leagues){
-        for ($i = 0; $i < count($leagues); $i++) {
-            for ($j = 0; $j < count($leagues[$i]->games); $j++) {
-             
-                if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
-                    $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
-                }else{
-                    //echo 'not checked';
-=======
     private $type;
     private $typeOfGame;
 
@@ -33,7 +22,6 @@ class GameInfo
                     $leagues[$i]->games[$j]->setFutGameLineUp($this->getInfo($leagues[$i]->games[$j]->game_link));
                 } else {
                   // Not Checked
->>>>>>> Stashed changes
                 }
             }
         }
@@ -48,13 +36,7 @@ class GameInfo
     public function getInfo($hrefOfGame)
     {
 
-<<<<<<< Updated upstream
-    public function getInfo($hrefOfGame){
-
-        $htmlGameInfo = AmUtil::askCurl($hrefOfGame,false);
-=======
         $htmlGameInfo = AmUtil::askCurl($hrefOfGame, false);
->>>>>>> Stashed changes
 
         return $this->ScrapInfo($htmlGameInfo);
 
@@ -68,11 +50,6 @@ class GameInfo
             @$domDocument->loadHTML($htmlGameInfo);
 
             $gameParts = $domDocument;
-<<<<<<< Updated upstream
-            $res = self::getOccurences($gameParts);
-
-        }catch (Exception $e){
-=======
 
             if ($this->typeOfGame == 1) {
                 if ($this->type == "link") {
@@ -90,17 +67,12 @@ class GameInfo
 
         } catch (Exception $e) {
 
->>>>>>> Stashed changes
         }
 
         return $res;
 
     }
 
-<<<<<<< Updated upstream
-
-    private static function getOccurences($gameParts){
-=======
     private static function getFLineUp($gameParts)
     {
         $res = "";
@@ -115,7 +87,6 @@ class GameInfo
 
     private static function getFOccurences($gameParts)
     {
->>>>>>> Stashed changes
 
         $res = array();
         $detailArray1H = array();
@@ -145,24 +116,6 @@ class GameInfo
                 } //if tag h4
             } //foreach
         }
-<<<<<<< Updated upstream
-    return $res;
-    }//getGoalsFirstHalf
-
-
-    private static function gameIncidents($details){
-        $detailArray=array();
-            foreach ($details as $incidents) {
-                if ($incidents) {
-                    if ($incidents->tagName != 'hr') {
-                        $footDetail= new FootDetail(
-                            $incidents->firstChild->textContent,
-                            $incidents->firstChild->nextSibling->nextSibling->textContent,
-                            $incidents->firstChild->nextSibling->getAttribute("class"));//tempo descricao tipo
-
-                        array_push($detailArray,$footDetail);
-                    }
-=======
         return $res;
     } //getFOccurences
 
@@ -178,7 +131,6 @@ class GameInfo
                         $incidents->firstChild->nextSibling->getAttribute("class")); //tempo descricao tipo
 
                     array_push($detailArray, $footDetail);
->>>>>>> Stashed changes
                 }
             }
         }

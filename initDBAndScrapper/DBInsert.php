@@ -8,17 +8,8 @@ class DBInsert
     public $password = "";
     public $conn;
     public $leagues;
+    public $typeOfGame;
 
-<<<<<<< Updated upstream
-    public function __construct($leagues){
-
-        $this->leagues = $leagues;
-        $this->conn = new mysqli($this->servername, $this->username, $this->password);
-        $this->conn ->select_db('FlashscoreDB');
-        self::deleteAll($this->conn);
-        $this->insertLeagues($this->conn);
-        $this->insertGames($this->conn);
-=======
     public function __construct($leagues, $typeOfGame)
     {
         $this->typeOfGame = $typeOfGame;
@@ -26,16 +17,10 @@ class DBInsert
         $this->conn = new mysqli($this->servername, $this->username, $this->password);
         $this->conn->select_db('FlashscoreDB');
         $this->bdHandler();
->>>>>>> Stashed changes
         $this->conn->close();
 
     }
 
-<<<<<<< Updated upstream
-
-    function insertLeagues($conn){
-
-=======
     public function bdHandler()
     {
         switch ($this->typeOfGame) {
@@ -68,7 +53,6 @@ class DBInsert
 
     public function insertLeaguesSoccer($conn)
     {
->>>>>>> Stashed changes
 
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
@@ -94,13 +78,8 @@ class DBInsert
 
     //------------------------------------
 
-<<<<<<< Updated upstream
-
-    function insertGames($conn){
-=======
     public function insertGamesSoccer($conn)
     {
->>>>>>> Stashed changes
         echo "\n Adding games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
@@ -110,33 +89,6 @@ class DBInsert
             foreach ($this->leagues[$i]->games as $game) {
 
                 $gameIAmAt = $game;
-<<<<<<< Updated upstream
-
-                $league_id = $i+1;
-                $game_time =$gameIAmAt->game_time;
-
-
-                $home_team =$gameIAmAt->home_team;
-
-
-                $away_team =$gameIAmAt->away_team;
-
-
-
-                $game_status =$gameIAmAt->game_status;
-
-
-                $hGoals =$gameIAmAt->hGoals;
-
-                $aGoals =$gameIAmAt->aGoals;
-
-
-                $game_link =$gameIAmAt->game_link;
-
-
-                $game_info =json_encode($gameIAmAt->game_info);
-
-=======
                 $league_id = $i + 1;
                 $game_time = $gameIAmAt->game_time;
                 $home_team = $gameIAmAt->home_team;
@@ -148,7 +100,6 @@ class DBInsert
                 $game_lineup = $gameIAmAt->game_lineup;
 
                 $game_info = json_encode($gameIAmAt->game_info);
->>>>>>> Stashed changes
 
                 $sql = "INSERT INTO FootGames (league_id,
                         game_time,
@@ -158,7 +109,8 @@ class DBInsert
                         hGoals,
                         aGoals,
                         game_link,
-                        game_info) values ('$league_id',
+                        game_info,
+                        game_lineup) values ('$league_id',
                         '$game_time',
                         '$home_team',
                         '$away_team',
@@ -166,7 +118,8 @@ class DBInsert
                         '$hGoals',
                         '$aGoals',
                         '$game_link',
-                        '$game_info')";
+                        '$game_info',
+                        '$game_lineup'                   )";
 
                 if ($conn->query($sql) === true) {
                     // echo "\n Game added successfully";
@@ -179,10 +132,6 @@ class DBInsert
 
     }
 
-<<<<<<< Updated upstream
-    function deleteAll(mysqli $conn){
-
-=======
     public function deleteAllBasket(mysqli $conn)
     {
 
@@ -222,7 +171,6 @@ class DBInsert
 
     public function deleteAllSoccer(mysqli $conn)
     {
->>>>>>> Stashed changes
 
         $sql = "DELETE FROM footgames ";
 
@@ -231,12 +179,6 @@ class DBInsert
         } else {
             echo "\n Error on deleting table: " . $this->conn->error;
         }
-<<<<<<< Updated upstream
-        $sql="ALTER TABLE footgames AUTO_INCREMENT = 1";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table auto increment reset";
-=======
 
         $sql = "ALTER TABLE footgames AUTO_INCREMENT = 1";
 
@@ -258,16 +200,12 @@ class DBInsert
 
         if ($conn->query($sql) === true) {
             echo "\n Table FootLeagues auto increment reset";
->>>>>>> Stashed changes
         } else {
             echo "\n Error on suto increment reset" . $this->conn->error;
         }
+
     }
 
-<<<<<<< Updated upstream
-
-}
-=======
     public function insertLeaguesBasket($conn)
     {
 
@@ -344,4 +282,3 @@ class DBInsert
     }
 
 }
->>>>>>> Stashed changes
