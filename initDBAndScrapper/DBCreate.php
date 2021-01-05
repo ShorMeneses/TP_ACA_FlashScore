@@ -60,6 +60,7 @@ public $conn;
              aGoals VARCHAR(100),
              game_link VARCHAR(100),
              game_info VARCHAR(65535),
+             game_lineup VARCHAR(100),
              FOREIGN KEY (league_id) REFERENCES footleagues(id)
              )";
 
@@ -94,6 +95,7 @@ public $conn;
              aGoals VARCHAR(100),
              game_link VARCHAR(100),
              game_info VARCHAR(65535),
+             game_lineup VARCHAR(100),
              FOREIGN KEY (league_id) REFERENCES basketleagues(id)
              )";
 
@@ -106,43 +108,4 @@ public $conn;
 
 
     }
-/*
-    function deleteAll(mysqli $conn){
-
-
-        $sql = "DROP TABLE footgames ";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table FootGames deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-
-        $sql = "DROP TABLE footleagues ";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table FootLeagues deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-
-        $sql = "DROP TABLE basketgames ";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table basketgames deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-
-        $sql = "DROP TABLE basketleagues ";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table basketleagues deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-
-    }
-*/
-
 }

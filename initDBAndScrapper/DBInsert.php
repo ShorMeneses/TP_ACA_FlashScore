@@ -112,6 +112,7 @@ class DBInsert{
 
                 $game_link =$gameIAmAt->game_link;
 
+                $game_lineup =$gameIAmAt->game_lineup;
 
                 $game_info =json_encode($gameIAmAt->game_info);
 
@@ -124,7 +125,8 @@ class DBInsert{
                         hGoals,
                         aGoals,
                         game_link,
-                        game_info) values ('$league_id',
+                        game_info,
+                        game_lineup) values ('$league_id',
                         '$game_time',
                         '$home_team',
                         '$away_team',
@@ -132,7 +134,8 @@ class DBInsert{
                         '$hGoals',
                         '$aGoals',
                         '$game_link',
-                        '$game_info')";
+                        '$game_info',
+                        '$game_lineup'                   )";
 
 
                 if ($conn->query($sql) === TRUE) {

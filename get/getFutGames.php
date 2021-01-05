@@ -47,12 +47,14 @@
                      $gameOfLeague["game_link"],
                      $gameOfLeague["hGoals"],
                      $gameOfLeague["aGoals"],
-                     $gameOfLeague["game_status"]
+                     $gameOfLeague["game_status"],
+
                  );
 
                
 
-                $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
+                 $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
+                 $game->setFutGameLineUp( json_decode($gameOfLeague["game_lineup"],true));
                  array_push($gamesTemp,$game);
                  $leagueTemp->pushJogos($game);     
              }

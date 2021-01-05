@@ -6,7 +6,7 @@ require_once 'DataTypes/Game.php';
 
 class GameInfo
 {
-
+    private $type="";
 
 
     public function getLeaguesLinks($leagues){
@@ -14,7 +14,10 @@ class GameInfo
             for ($j = 0; $j < count($leagues[$i]->games); $j++) {
              
                 if ($this->contains($leagues[$i]->games[$j]->game_status,'Finished') == 'true' || $this->contains($leagues[$i]->games[$j]->game_status,'Half Time') == 'true'  || $this->contains($leagues[$i]->games[$j]->game_status,'Live') == 'true'   ) {
+                    $this->type="link";
                     $leagues[$i]->games[$j]->setFutGameInfo($this->getInfo($leagues[$i]->games[$j]->game_link));
+                    $this->type="lineUp";
+                    $leagues[$i]->games[$j]->setFutGameLineUp($this->getInfo($leagues[$i]->games[$j]->game_link));
                 }else{
                     //echo 'not checked';
                 }
@@ -29,6 +32,7 @@ class GameInfo
 
         $htmlGameInfo = AmUtil::askCurl($hrefOfGame,false);
 
+
         return $this->ScrapInfo($htmlGameInfo);
 
     }
@@ -42,9 +46,14 @@ class GameInfo
 
             $gameParts = $domDocument;
 
-        
+
+            if($this->type=="link"){
                 $res = self::getFOccurences($gameParts);
-           
+            }else {
+                $res = self::getFLineUp($gameParts);
+            }
+
+
 
         }catch (Exception $e){
         }
@@ -53,6 +62,24 @@ class GameInfo
 
     }
 
+    private static function getFLineUp($gameParts){
+        $res ="";
+
+        $detaiTabs = $gameParts->getElementById("detail-tabs");
+        if ($detaiTabs) {
+            $res = $detaiTabs->firstChild->nextSibling->nextSibling->getAttribute('href');
+        }
+        return $res;
+
+    }
+
+    private function cleanMatchUrl($matchUrl){
+        $matchUrl = str_replace('href="',"", $matchUrl);
+        $matchUrl = str_replace('"',"", $matchUrl);
+        $matchUrl = str_replace("'","",$matchUrl);
+
+        return $matchUrl;
+    }
     
 
     private static function getFOccurences($gameParts){
@@ -87,7 +114,7 @@ class GameInfo
             }//foreach
         }
     return $res;
-    }//getGoalsFirstHalf
+    }//getFOccurences
 
 
     private static function gameIncidents($details){
