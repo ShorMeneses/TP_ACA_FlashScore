@@ -5,9 +5,9 @@ $promptMSG =" 1 - Soccer \n 2 - Basketball \n";
 echo $promptMSG;
 $typeOfGame = readline();
 
+$DBcreate = new DBCreate();
 
-
-$flashschore = new Flashscore($typeOfGame);  //Create Flashscore instance
+$flashschore = new Flashscore($typeOfGame,$DBcreate);  //Create Flashscore instance
 echo "\n Api will be available at [IP adress]/get/getFutGames.php";
 
 

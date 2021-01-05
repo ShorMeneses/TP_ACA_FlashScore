@@ -12,18 +12,20 @@ require_once 'DBInsert.php';
     class Flashscore {
         private $leagues;
         private $typeOfGame;
+        private $DBcreate;
 
         // Constructor
-    public function __construct($typeOfGame){
+    public function __construct($typeOfGame,$DBcreate ){
+        $this->DBcreate=$DBcreate;
        $this->typeOfGame = $typeOfGame;
     }
 
     public function handlerGetSite(){
         switch ($this->typeOfGame) {
-          /*  case 0:
+            case 0:
                 $this->getSite('');
                 $this->getSite('basketball/');
-                break;*/
+                break;
             case 1:
                 $this->getSite('');
                 break;
@@ -34,6 +36,7 @@ require_once 'DBInsert.php';
     }
 
     public function getSite($typeOfGameHref){
+
 
         // TODO on href add various types of game
         echo "\n Started Scrapping".$this->typeOfGame;
@@ -139,7 +142,7 @@ require_once 'DBInsert.php';
         }
 
         $gameInfo = new GameInfo();
-        $DBcreate = new DBCreate();
+
 
         $allInfo = $gameInfo ->getLeaguesLinks($this->leagues);
         $DBInsert = new DBInsert($allInfo,$this->typeOfGame);

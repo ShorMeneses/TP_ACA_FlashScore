@@ -13,7 +13,7 @@ public $conn;
         $this->conn = new mysqli($this->servername, $this->username, $this->password);
         $this->createDataBase($this->conn);
         $this->conn ->select_db('FlashscoreDB');
-        $this->deleteAll($this->conn);
+       // $this->deleteAll($this->conn);
         $this->createTablesIfTheyDontExist($this->conn);
 
         $this->conn->close();
@@ -106,7 +106,7 @@ public $conn;
 
 
     }
-
+/*
     function deleteAll(mysqli $conn){
 
 
@@ -126,6 +126,14 @@ public $conn;
             echo "\n Error on deleting table: " . $this->conn->error;
         }
 
+        $sql = "DROP TABLE basketgames ";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table basketgames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
         $sql = "DROP TABLE basketleagues ";
 
         if ($conn->query($sql) === TRUE) {
@@ -134,9 +142,7 @@ public $conn;
             echo "\n Error on deleting table: " . $this->conn->error;
         }
 
-
-
     }
-
+*/
 
 }

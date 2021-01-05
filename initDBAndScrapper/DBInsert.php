@@ -22,10 +22,10 @@ class DBInsert{
 
     function bdHandler(){
         switch ($this->typeOfGame) {
-           /* case 0:
+            case 0:
                 $this->bdHandlerSoccer();
                 $this->bdHandlerBasket();
-                break;*/
+                break;
             case 1:
                 $this->bdHandlerSoccer();
                 break;
@@ -33,7 +33,6 @@ class DBInsert{
                 $this->bdHandlerBasket();
                 break;
         }
-
     }
 
     function bdHandlerSoccer(){
@@ -148,7 +147,87 @@ class DBInsert{
     }
 
 
+    function deleteAllBasket(mysqli $conn){
 
+
+        $sql = "DELETE FROM basketgames ";
+
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql="ALTER TABLE basketgames AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketGames auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+
+        $sql = "DELETE FROM basketleagues ";
+
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+
+        $sql="ALTER TABLE basketleagues AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketLeagues auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+    }
+
+    function deleteAllSoccer(mysqli $conn){
+
+
+        $sql = "DELETE FROM footgames ";
+
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table FootGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql="ALTER TABLE footgames AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table FootGames auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+
+        $sql = "DELETE FROM footleagues ";
+
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table footLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+
+        $sql="ALTER TABLE footleagues AUTO_INCREMENT = 1";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table FootLeagues auto increment reset";
+        } else {
+            echo "\n Error on suto increment reset" . $this->conn->error;
+        }
+
+    }
 
 
     function insertLeaguesBasket($conn){
@@ -241,49 +320,6 @@ class DBInsert{
     }
 
 
-
-
-
-    function deleteAllSoccer(mysqli $conn){
-
-
-        $sql = "DELETE FROM footgames ";
-
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table FootGames deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-        $sql="ALTER TABLE footgames AUTO_INCREMENT = 1";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table FootGames auto increment reset";
-        } else {
-            echo "\n Error on suto increment reset" . $this->conn->error;
-        }
-    }
-
-    
-    function deleteAllBasket(mysqli $conn){
-
-
-        $sql = "DELETE FROM basketgames ";
-
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table BasketGames deleted successfully";
-        } else {
-            echo "\n Error on deleting table: " . $this->conn->error;
-        }
-        $sql="ALTER TABLE basketgames AUTO_INCREMENT = 1";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "\n Table BasketGames auto increment reset";
-        } else {
-            echo "\n Error on suto increment reset" . $this->conn->error;
-        }
-    }
 
 
 }
