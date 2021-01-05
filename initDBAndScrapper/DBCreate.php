@@ -8,17 +8,37 @@ public $servername = "localhost";
 public $username = "root";
 public $password = "";
 public $conn;
+public $typeOfGame;
 
-    public function __construct(){
+    public function __construct($typeOfGame){
+        $this->$typeOfGame=$typeOfGame;
         $this->conn = new mysqli($this->servername, $this->username, $this->password);
         $this->createDataBase($this->conn);
         $this->conn ->select_db('FlashscoreDB');
-       // $this->deleteAll($this->conn);
+        $this->deleteTableHandeler();
         $this->createTablesIfTheyDontExist($this->conn);
-
         $this->conn->close();
 
     }
+
+    function deleteTableHandeler(){
+        switch ($this->typeOfGame) {
+            case 0:
+                $this->deleteSoccerTables($this->conn);
+                $this->deleteBasketTables($this->conn);
+                break;
+            case 1:
+                $this->deleteSoccerTables($this->conn);
+                break;
+            case 2:
+                $this->deleteBasketTables($this->conn);
+                break;
+        }
+    }
+
+
+
+
 
     function createDataBase($conn){
         if ($conn->connect_error) {
@@ -108,4 +128,48 @@ public $conn;
 
 
     }
+
+
+    function deleteSoccerTables($conn){
+            $sql = "DROP TABLE footgames ";
+    
+            if ($conn->query($sql) === TRUE) {
+                echo "\n Table FootGames deleted successfully";
+            } else {
+                echo "\n Error on deleting table: " . $this->conn->error;
+            }
+    
+            $sql = "DROP TABLE footleagues ";
+    
+            if ($conn->query($sql) === TRUE) {
+                echo "\n Table FootLeagues deleted successfully";
+            } else {
+                echo "\n Error on deleting table: " . $this->conn->error;
+            }
+    
+    
+    }
+
+
+    function deleteBasketTables($conn){
+        $sql = "DROP TABLE basketgames ";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "DROP TABLE basketleagues ";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "\n Table BasketLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+
+}
+
+
 }

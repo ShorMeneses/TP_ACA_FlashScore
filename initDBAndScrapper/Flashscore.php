@@ -12,12 +12,10 @@ require_once 'DBInsert.php';
     class Flashscore {
         private $leagues;
         private $typeOfGame;
-        private $DBcreate;
         private $whichHtmlDoIHave;
 
         // Constructor
-    public function __construct($typeOfGame,$DBcreate ){
-        $this->DBcreate=$DBcreate;
+    public function __construct($typeOfGame){
        $this->typeOfGame = $typeOfGame;
     }
 
