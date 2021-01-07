@@ -14,8 +14,8 @@ class DBInsert
     {
         $this->typeOfGame = $typeOfGame;
         $this->leagues = $leagues;
-        $this->conn = new mysqli($this->servername, $this->username, $this->password);
-        $this->conn->select_db('FlashscoreDB');
+        $this->conn = new mysqli($this->servername, $this->username, $this->password);      //Connect to DB
+        $this->conn->select_db('FlashscoreDB');                                             //Select the DB
         $this->bdHandler();
         $this->conn->close();
 
@@ -23,6 +23,7 @@ class DBInsert
 
     public function bdHandler()
     {
+        //Decide what to do, based on what Type of Game was asked
         switch ($this->typeOfGame) {
             case 0:
                 $this->bdHandlerSoccer();
@@ -53,7 +54,7 @@ class DBInsert
 
     public function insertLeaguesSoccer($conn)
     {
-
+        //Insert the Leagues info into the Leagues table
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
@@ -80,6 +81,7 @@ class DBInsert
 
     public function insertGamesSoccer($conn)
     {
+        //Insert the Games info into the Games table
         echo "\n Adding games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
@@ -99,6 +101,7 @@ class DBInsert
                 $game_link = $gameIAmAt->game_link;
                 $game_lineup = $gameIAmAt->game_lineup;
 
+                //Insert the json right in to the DB to lower complexity of the DB
                 $game_info = json_encode($gameIAmAt->game_info);
 
                 $sql = "INSERT INTO FootGames (league_id,
@@ -134,7 +137,7 @@ class DBInsert
 
     public function deleteAllBasket(mysqli $conn)
     {
-
+        //Delete all info from Basketball table and clean the auto increment
         $sql = "DELETE FROM basketgames ";
 
         if ($conn->query($sql) === true) {
@@ -171,7 +174,7 @@ class DBInsert
 
     public function deleteAllSoccer(mysqli $conn)
     {
-
+        //Delete all info from Soccer table and clean the auto increment
         $sql = "DELETE FROM footgames ";
 
         if ($conn->query($sql) === true) {
@@ -208,7 +211,7 @@ class DBInsert
 
     public function insertLeaguesBasket($conn)
     {
-
+        //Insert Basket Leagues information into BD
         echo "\n Adding Basketball leagues";
 
         for ($i = 0; $i < count($this->leagues); $i++) {
@@ -229,6 +232,7 @@ class DBInsert
 
     public function insertGamesBasket($conn)
     {
+        //Insert Basket games information into BD
         echo "\n Adding Basketball games";
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);

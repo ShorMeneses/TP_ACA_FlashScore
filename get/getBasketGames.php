@@ -15,8 +15,8 @@
 
     public function __construct(){
         $this->leagues=array();
-        $this->conn = new mysqli($this->servername, $this->username, $this->password);
-        $this->conn->select_db('FlashscoreDB');
+        $this->conn = new mysqli($this->servername, $this->username, $this->password);      //Connect to DB    
+        $this->conn->select_db('FlashscoreDB');                                             //Select the DB
         $this->getGames($this->conn);
         $this->conn->close();
     }
@@ -39,6 +39,7 @@
              $gamesOfLeagues=$conn->query($sql);
 
              $gamesTemp=array();
+             //Get game Data from DB
              while ($gameOfLeague=$gamesOfLeagues->fetch_assoc()){
 
                  $game = new Game($gameOfLeague["game_time"],
@@ -51,7 +52,7 @@
 
                  );
                 
-               
+                 //Recreate the Object League
                  $game->setFutGameInfo( json_decode($gameOfLeague["game_info"],true));
                  $game->setFutGameLineUp($gameOfLeague["game_lineup"]);
                  array_push($gamesTemp,$game);
@@ -62,7 +63,7 @@
              array_push($this->leagues,$leagueTemp);
          }
 
-
+            //Print all the object encoded to JSON
             echo json_encode($this->leagues);
         }else{
             echo"Nothing to show";

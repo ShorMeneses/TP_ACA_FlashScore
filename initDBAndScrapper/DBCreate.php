@@ -1,27 +1,29 @@
 <?php
 
+class DBCreate
+{
 
-class DBCreate{
+    public $servername = "localhost";
+    public $username = "root";
+    public $password = "";
+    public $conn;
+    public $typeOfGame;
 
-
-public $servername = "localhost";
-public $username = "root";
-public $password = "";
-public $conn;
-public $typeOfGame;
-
-    public function __construct($typeOfGame){
-        $this->$typeOfGame=$typeOfGame;
-        $this->conn = new mysqli($this->servername, $this->username, $this->password);
-        $this->createDataBase($this->conn);
-        $this->conn ->select_db('FlashscoreDB');
+    public function __construct($typeOfGame)
+    {
+        $this->$typeOfGame = $typeOfGame;                                                       //Associate Type Of Game
+        $this->conn = new mysqli($this->servername, $this->username, $this->password);          //Connect to DB
+        $this->createDataBase($this->conn);                                                     //Create DB
+        $this->conn->select_db('FlashscoreDB');                                                 //Select DB
         $this->deleteTableHandeler();
         $this->createTablesIfTheyDontExist($this->conn);
         $this->conn->close();
 
     }
 
-    function deleteTableHandeler(){
+    public function deleteTableHandeler()
+    {
+        //Chooses which tables to delete taking in account the Type Of Game
         switch ($this->typeOfGame) {
             case 0:
                 $this->deleteSoccerTables($this->conn);
@@ -36,36 +38,33 @@ public $typeOfGame;
         }
     }
 
-
-
-
-
-    function createDataBase($conn){
+    public function createDataBase($conn)
+    {
         if ($conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
 
-// Create database
+        // Create database
         $sql = "CREATE DATABASE IF NOT EXISTS FlashscoreDB";
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Database created successfully";
         } else {
             echo "\n Error creating database: " . $this->conn->error;
         }
     }
 
-    function createTablesIfTheyDontExist($conn){
-
+    public function createTablesIfTheyDontExist($conn)
+    {
+        //Creating tables
         $sql = "CREATE TABLE IF NOT EXISTS FootLeagues (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(100) NOT NULL)";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table FootLeagues created successfully";
         } else {
             echo "\n Error creating table: " . $this->conn->error;
         }
-
 
         //-----------------------------------------------
 
@@ -84,25 +83,25 @@ public $typeOfGame;
              FOREIGN KEY (league_id) REFERENCES footleagues(id)
              )";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table FootGames created successfully";
         } else {
             echo "\n Error creating table: " . $this->conn->error;
         }
 
-        //---------------------------------------------------BASKET
+        //----------------------BASKET------------------------
 
         $sql = "CREATE TABLE IF NOT EXISTS BasketLeagues (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(100) NOT NULL)";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table BasketLeagues created successfully";
         } else {
             echo "\n Error creating table: " . $this->conn->error;
         }
 
-        //--------------------------------------------------------------
+        //----------------------------------------------------
 
         $sql = "CREATE TABLE IF NOT EXISTS BasketGames (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -119,42 +118,39 @@ public $typeOfGame;
              FOREIGN KEY (league_id) REFERENCES basketleagues(id)
              )";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table BasketGames created successfully";
         } else {
             echo "\n Error creating table: " . $this->conn->error;
         }
 
+    }
 
+    public function deleteSoccerTables($conn)
+    {
+        //Only delete Soccer tables
+        $sql = "DROP TABLE footgames ";
+        if ($conn->query($sql) === true) {
+            echo "\n Table FootGames deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
+
+        $sql = "DROP TABLE footleagues ";
+        if ($conn->query($sql) === true) {
+            echo "\n Table FootLeagues deleted successfully";
+        } else {
+            echo "\n Error on deleting table: " . $this->conn->error;
+        }
 
     }
 
-
-    function deleteSoccerTables($conn){
-            $sql = "DROP TABLE footgames ";
-    
-            if ($conn->query($sql) === TRUE) {
-                echo "\n Table FootGames deleted successfully";
-            } else {
-                echo "\n Error on deleting table: " . $this->conn->error;
-            }
-    
-            $sql = "DROP TABLE footleagues ";
-    
-            if ($conn->query($sql) === TRUE) {
-                echo "\n Table FootLeagues deleted successfully";
-            } else {
-                echo "\n Error on deleting table: " . $this->conn->error;
-            }
-    
-    
-    }
-
-
-    function deleteBasketTables($conn){
+    public function deleteBasketTables($conn)
+    {
+        //Only Delete Basket tables
         $sql = "DROP TABLE basketgames ";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table BasketGames deleted successfully";
         } else {
             echo "\n Error on deleting table: " . $this->conn->error;
@@ -162,13 +158,12 @@ public $typeOfGame;
 
         $sql = "DROP TABLE basketleagues ";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->query($sql) === true) {
             echo "\n Table BasketLeagues deleted successfully";
         } else {
             echo "\n Error on deleting table: " . $this->conn->error;
         }
 
-}
-
+    }
 
 }

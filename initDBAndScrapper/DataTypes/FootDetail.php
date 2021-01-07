@@ -21,7 +21,7 @@ class FootDetail{
     }
 
     public function helpConstrutor($tipo){
-
+        //Associate the class from the HTML element to a more pleasent String
         $res="Error";
         if(strpos($tipo,"y-card")){
             $res="Yellow Card";

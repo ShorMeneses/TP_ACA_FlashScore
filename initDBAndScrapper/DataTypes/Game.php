@@ -23,7 +23,7 @@ class Game
      * @param $game_link;
      */
 
-    public function __construct($game_time, $home_team, $away_team, $game_link,$hGoals,$aGoals,$game_status)
+    public function __construct($game_time, $home_team, $away_team, $game_link, $hGoals, $aGoals, $game_status)
     {
         $this->game_time = $game_time;
         $this->home_team = $home_team;
@@ -31,7 +31,7 @@ class Game
         $this->game_link = $game_link;
         $this->hGoals = $hGoals;
         $this->aGoals = $aGoals;
-        $this->game_status= $game_status;
+        $this->game_status = $game_status;
 
     }
 
@@ -46,7 +46,7 @@ class Game
     /**
      * @param mixed $result
      */
-    public function setResult($hGoals,$aGoals)
+    public function setResult($hGoals, $aGoals)
     {
         $this->hGoals = $hGoals;
         $this->aGoals = $aGoals;
@@ -144,6 +144,5 @@ class Game
     {
         return $this->game_link;
     }
-
 
 }
